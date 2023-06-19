@@ -1,0 +1,19 @@
+{
+  "name": "proyecto-arquitectura-software",
+  "version": "1.0.0",
+  "description": "Proyecto de arquitectura de software",
+  "dependencies": {
+    "pg": "^8.11.0",
+    "prompt-sync": "^4.2.0",
+    "ssh2": "^1.13.0"
+  },
+  "scripts": {
+    "start:cli": "node src/client/base.js",
+    "start:svDB": "node src/services/database/database.service.js",
+    "start:svSession": "node src/services/sesion.service.js",
+    "start:svUser": "node src/services/usuario.service.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
