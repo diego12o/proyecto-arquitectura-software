@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS curso (
   nombre varchar(50) NOT NULL DEFAULT '0'
 );
 
-CREATE TABLE IF NOT EXISTS profesores (
+CREATE TABLE IF NOT EXISTS profesor (
   id SERIAL PRIMARY KEY,
   correo varchar(50) NOT NULL,
   nombre varchar(50) NOT NULL
@@ -15,10 +15,10 @@ CREATE TABLE IF NOT EXISTS profesor_curso (
   codigo_curso varchar(50) NOT NULL,
   id_profesor int NOT NULL,
   FOREIGN KEY (codigo_curso) REFERENCES curso (codigo),
-  FOREIGN KEY (id_profesor) REFERENCES profesores (id)
+  FOREIGN KEY (id_profesor) REFERENCES profesor (id)
 );
 
-CREATE TABLE IF NOT EXISTS evaluaciones (
+CREATE TABLE IF NOT EXISTS evaluacion (
   id SERIAL PRIMARY KEY,
   id_profesor_curso int NOT NULL,
   comentario text NOT NULL,
