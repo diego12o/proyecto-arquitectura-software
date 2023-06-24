@@ -8,7 +8,7 @@ class UserRepository {
   async addUser(rut, mail, password, carrera, nombre, ano_ingreso, tipo) {
     try {
       await this.pool.query(
-        "INSERT INTO usuarios(rut, mail, password, carrera, nombre, ano_ingreso, tipo) VALUES($1, $2, $3, $4, $5, $6, $7)",
+        "INSERT INTO usuario(rut, mail, password, carrera, nombre, ano_ingreso, tipo) VALUES($1, $2, $3, $4, $5, $6, $7)",
         [rut, mail, password, carrera, nombre, ano_ingreso, tipo]
       );
       return true;
@@ -21,7 +21,7 @@ class UserRepository {
   async changePassword(password, mail) {
     try {
       await this.pool.query(
-        'UPDATE "usuarios" SET password=$1 WHERE mail = $2',
+        'UPDATE "usuario" SET password=$1 WHERE mail = $2',
         [password, mail]
       );
       return true;
@@ -33,7 +33,7 @@ class UserRepository {
 
   async deleteUser(rut) {
     try {
-      await this.pool.query("DELETE FROM usuarios WHERE Rut = $1", [rut]);
+      await this.pool.query("DELETE FROM usuario WHERE Rut = $1", [rut]);
       return true;
     } catch (error) {
       console.error(error);
@@ -44,7 +44,7 @@ class UserRepository {
   async findUserByMail(mail) {
     try {
       const result = await this.pool.query(
-        "SELECT * FROM usuarios WHERE mail = $1",
+        "SELECT * FROM usuario WHERE mail = $1",
         [mail]
       );
       return result.rows[0];
@@ -55,4 +55,4 @@ class UserRepository {
   }
 }
 
-module.exports = UserRepository;
+module.exports = { UserRepository };

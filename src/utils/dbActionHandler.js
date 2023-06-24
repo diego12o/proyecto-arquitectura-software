@@ -2,27 +2,38 @@ const { formatMessageWithLengthPrefix } = require("./messageFormatter");
 
 function sendActionToDBAndHandleResponse(
   stream,
+  entity,
   action,
   params,
   successMsg,
   errorMsg
 ) {
-  const message = formatMessageWithLengthPrefix(
-    `DBser${action}|${params.join("|")}`
+  const MessageToSVDB = formatMessageWithLengthPrefix(
+    `DBser|${entity}|${action}|${params.join("|")}`
   );
-  console.log({ message });
-  stream.write(message);
+  console.log({ MessageToSVDB });
+  stream.write(MessageToSVDB);
 
-  stream.on("data", (data) => {
-    const stringData = data.toString();
-    const idServiceBDResponse = stringData.slice(5, 10);
+  return stream.on("data", (data) => {
+    const responseMessageSVDB = data.toString();
+
+    const idServiceBDResponse = responseMessageSVDB.slice(5, 10);
 
     if (idServiceBDResponse === "DBser") {
-      const payload = stringData.slice(10);
-      const isSuccess = ["exito", "actualizado", "eliminado"].includes(payload);
-      stream.write(
-        formatMessageWithLengthPrefix(isSuccess ? successMsg : errorMsg)
-      );
+      console.log({ responseMessageSVDB });
+      const payload = responseMessageSVDB.slice(10);
+      const isExitoInStr = payload.includes("exito");
+      const isActualizadoInStr = payload.includes("actualizado");
+      const isEliminadoInStr = payload.includes("eliminado");
+      const isExisteInStr = payload.includes("existe");
+
+      const isSuccess =
+        isExitoInStr || isActualizadoInStr || isEliminadoInStr || isExisteInStr;
+
+      const message = isSuccess ? successMsg : errorMsg;
+      const messageToBus = formatMessageWithLengthPrefix(message);
+      console.log({ messageToBus });
+      return stream.write(messageToBus);
     }
   });
 }

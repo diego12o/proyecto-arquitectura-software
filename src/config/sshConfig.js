@@ -1,8 +1,10 @@
+require("dotenv").config();
+
 const sshConfig = {
   host: "200.14.84.16",
   port: 8080,
-  username: "123",
-  password: "123",
+  username: process.env.UDP_USERNAME,
+  password: process.env.UDP_PASSWORD,
 };
 
 const targetHost = "localhost";

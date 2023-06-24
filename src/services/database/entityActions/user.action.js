@@ -1,11 +1,14 @@
-const UserRepository = require("../../../repositories/user.repository");
+const { UserRepository } = require("../../../repositories/user.repository");
+const {
+  formatMessageWithLengthPrefix,
+} = require("../../../utils/messageFormatter");
 
 async function executeUserAction(action, params, stream) {
   const userRepository = new UserRepository();
-
   switch (action) {
-    case "create":
+    case "create": {
       const [rut, mail, password, carrera, nombre, ano_ingreso, tipo] = params;
+      console.log({ rut, mail, password, carrera, nombre, ano_ingreso, tipo });
       const success = await userRepository.addUser(
         rut,
         mail,
@@ -15,42 +18,44 @@ async function executeUserAction(action, params, stream) {
         ano_ingreso,
         tipo
       );
-      stream.write(
-        success
-          ? formatMessageWithLengthPrefix("DBserexito")
-          : formatMessageWithLengthPrefix("DBserfracaso")
-      );
-      break;
+      const messageToBus = success
+        ? formatMessageWithLengthPrefix("DBserexito")
+        : formatMessageWithLengthPrefix("DBserfracaso");
 
-    case "update":
+      console.log({ messageToBus });
+      return stream.write(messageToBus);
+    }
+
+    case "update": {
       const [updPassword, updMail] = params;
       const updated = await userRepository.changePassword(updPassword, updMail);
-      stream.write(
-        updated
-          ? formatMessageWithLengthPrefix("DBseractualizado")
-          : formatMessageWithLengthPrefix("DBserfracaso")
-      );
-      break;
+      const messageToBus = updated
+        ? formatMessageWithLengthPrefix("DBseractualizado")
+        : formatMessageWithLengthPrefix("DBserfracaso");
+      console.log({ messageToBus });
+      return stream.write(messageToBus);
+    }
 
-    case "delete":
+    case "delete": {
       const [_, __, delRut] = params;
       const deleted = await userRepository.deleteUser(delRut);
-      stream.write(
-        deleted
-          ? formatMessageWithLengthPrefix("DBsereliminado")
-          : formatMessageWithLengthPrefix("DBserfracaso")
-      );
-      break;
+      const messageToBus = deleted
+        ? formatMessageWithLengthPrefix("DBsereliminado")
+        : formatMessageWithLengthPrefix("DBserfracaso");
+      console.log({ messageToBus });
+      return stream.write(messageToBus);
+    }
 
-    case "isess":
+    case "isess": {
       const [isessMail, isessPassword] = params;
       const usuario = await userRepository.findUserByMail(isessMail);
-      stream.write(
+      const messageToBus =
         usuario && usuario.password === isessPassword
           ? formatMessageWithLengthPrefix("DBserexiste")
-          : formatMessageWithLengthPrefix("DBsernoexiste")
-      );
-      break;
+          : formatMessageWithLengthPrefix("DBsernoexiste");
+      console.log({ messageToBus });
+      return stream.write(messageToBus);
+    }
 
     default:
       console.log("Acción desconocida:", action);

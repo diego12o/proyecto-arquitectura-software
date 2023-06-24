@@ -8,6 +8,7 @@ class SSHTunnel {
     this.targetHost = targetHost;
     this.targetPort = targetPort;
     this.sshClient = new Client();
+    this.sshClient.connect(this.sshConfig);
   }
 
   connect(onDataCallback, initMessageService) {
@@ -26,7 +27,7 @@ class SSHTunnel {
             return;
           }
           stream.write(initMessageService);
-          stream.on("data", onDataCallback(data, err, stream));
+          stream.on("data", (data) => onDataCallback(data, stream));
 
           stream.on("close", () => {
             this.sshClient.end();
@@ -39,8 +40,6 @@ class SSHTunnel {
       console.log("Error en la conexión SSH:", err);
       this.sshClient.end();
     });
-
-    this.sshClient.connect(this.sshConfig);
   }
 }
 

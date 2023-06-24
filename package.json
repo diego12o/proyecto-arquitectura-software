@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Proyecto de arquitectura de software",
   "dependencies": {
+    "dotenv": "^16.3.1",
     "pg": "^8.11.0",
     "prompt-sync": "^4.2.0",
     "ssh2": "^1.13.0"

@@ -1,53 +1,52 @@
-const SSHTunnel = require("../shared/sshTunnel.js");
+const SSHTunnel = require("../utils/sshTunnel.js");
 const sendActionToDBAndHandleResponse = require("../utils/dbActionHandler");
 
 const sshTunnel = new SSHTunnel();
 
-function handler(data, error, stream) {
-  const stringData = data.toString();
+function handler(data, stream) {
+  const inputMessage = data.toString();
 
-  if (stringData === "00012sinitOKusuar") {
+  if (inputMessage === "00012sinitOKusuar") {
     console.log("Servicio Usuario enlazado al bus");
     return;
   }
 
-  const idService = stringData.slice(5, 10);
-  const payload = stringData.slice(10);
+  const idService = inputMessage.slice(5, 10);
+  const payload = inputMessage.slice(11);
   const [action, ...params] = payload.split("|");
 
   if (idService === "usuar") {
+    console.log({ inputMessage });
     switch (action) {
       case "create":
-        sendActionToDBAndHandleResponse(
+        return sendActionToDBAndHandleResponse(
           stream,
+          "user",
           action,
           params,
-          "usuarexito",
-          "usuarfracaso"
+          idService + "exito",
+          idService + "fracaso"
         );
-        break;
-
       case "update":
-        sendActionToDBAndHandleResponse(
+        return sendActionToDBAndHandleResponse(
           stream,
+          "user",
           action,
           params,
-          "usuaractualizado",
-          "usuarnoactualizado"
+          idService + "actualizado",
+          idService + "noactualizado"
         );
-        break;
-
       case "delete":
-        sendActionToDBAndHandleResponse(
+        return sendActionToDBAndHandleResponse(
           stream,
+          "user",
           action,
           params,
-          "usuareliminado",
-          "usuarnoeliminado"
+          idService + "eliminado",
+          idService + "noeliminado"
         );
-        break;
     }
   }
 }
 
-sshTunnel.connect(handler, "00010sinitisess");
+sshTunnel.connect(handler, "00010sinitusuar");

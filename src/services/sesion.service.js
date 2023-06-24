@@ -1,25 +1,26 @@
-const SSHTunnel = require("../shared/sshTunnel.js");
+const SSHTunnel = require("../utils/sshTunnel.js");
 const sendActionToDBAndHandleResponse = require("../utils/dbActionHandler.js");
 const sshTunnel = new SSHTunnel();
 
-function handler(data, error, stream) {
-  const StringData = data.toString();
-  console.log({ StringData });
+function handler(data, stream) {
+  const inputMessage = data.toString();
 
-  if (StringData === "00012sinitOKisess") {
+  if (inputMessage === "00012sinitOKisess") {
     console.log("Servicio Inicio de Sesion enlazado al bus");
+    return;
   }
 
-  const IdService = StringData.slice(5, 10);
+  const IdService = inputMessage.slice(5, 10);
   if (IdService === "isess") {
-    const [mail, pass] = StringData.slice(10).split("|");
-
+    console.log({ inputMessage });
+    const [mail, pass] = inputMessage.slice(11).split("|");
     sendActionToDBAndHandleResponse(
       stream,
+      "user",
       "isess",
       [mail, pass],
-      "isisessexiste",
-      "isessnoexiste"
+      IdService + "existe",
+      IdService + "noexiste"
     );
   }
 }
