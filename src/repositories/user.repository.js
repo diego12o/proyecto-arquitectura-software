@@ -5,11 +5,19 @@ class UserRepository {
     this.pool = pool;
   }
 
-  async addUser(rut, mail, password, carrera, nombre, ano_ingreso, tipo) {
+  async addUser(
+    rut,
+    correo,
+    contrasena,
+    carrera,
+    nombre,
+    ano_ingreso,
+    es_admin = false
+  ) {
     try {
       await this.pool.query(
-        "INSERT INTO usuario(rut, mail, password, carrera, nombre, ano_ingreso, tipo) VALUES($1, $2, $3, $4, $5, $6, $7)",
-        [rut, mail, password, carrera, nombre, ano_ingreso, tipo]
+        "INSERT INTO usuario(rut, correo, contrasena, carrera, nombre, ano_ingreso, es_admin) VALUES($1, $2, $3, $4, $5, $6, $7)",
+        [rut, correo, contrasena, carrera, nombre, ano_ingreso, es_admin]
       );
       return true;
     } catch (error) {
@@ -18,11 +26,11 @@ class UserRepository {
     }
   }
 
-  async changePassword(password, mail) {
+  async changePassword(contrasena, correo) {
     try {
       await this.pool.query(
-        'UPDATE "usuario" SET password=$1 WHERE mail = $2',
-        [password, mail]
+        'UPDATE "usuario" SET contrasena=$1 WHERE correo = $2',
+        [contrasena, correo]
       );
       return true;
     } catch (error) {
@@ -33,7 +41,7 @@ class UserRepository {
 
   async deleteUser(rut) {
     try {
-      await this.pool.query("DELETE FROM usuario WHERE Rut = $1", [rut]);
+      await this.pool.query("DELETE FROM usuario WHERE rut = $1", [rut]);
       return true;
     } catch (error) {
       console.error(error);
@@ -41,11 +49,11 @@ class UserRepository {
     }
   }
 
-  async findUserByMail(mail) {
+  async findUserByMail(correo) {
     try {
       const result = await this.pool.query(
-        "SELECT * FROM usuario WHERE mail = $1",
-        [mail]
+        "SELECT * FROM usuario WHERE correo = $1",
+        [correo]
       );
       return result.rows[0];
     } catch (error) {

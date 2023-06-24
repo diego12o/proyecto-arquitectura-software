@@ -50,7 +50,7 @@ async function executeUserAction(action, params, stream) {
       const [isessMail, isessPassword] = params;
       const usuario = await userRepository.findUserByMail(isessMail);
       const messageToBus =
-        usuario && usuario.password === isessPassword
+        usuario && usuario.contrasena === isessPassword
           ? formatMessageWithLengthPrefix("DBserexiste")
           : formatMessageWithLengthPrefix("DBsernoexiste");
       console.log({ messageToBus });

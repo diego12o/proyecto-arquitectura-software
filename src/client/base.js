@@ -70,21 +70,22 @@ sshClient.on("ready", () => {
           "\n"
         );
         const rut = prompt("Ingrese su rut: ");
-        const mail = prompt("Ingrese su correo: ");
-        const password = prompt("Ingrese su contraseña: ");
+        const correo = prompt("Ingrese su correo: ");
+        const contrasena = prompt("Ingrese su contraseña: ");
         const carrera = prompt("Ingrese la carrera a la que pertenece: ");
         const nombre = prompt("Ingrese su nombre: ");
         const ano_ingreso = prompt(
           "Ingrese su año de ingreso a la universidad: "
         );
+        const es_admin = false; // Definido por defecto
         const requestMessage =
           "00011usuar|create" +
           "|" +
           rut +
           "|" +
-          mail +
+          correo +
           "|" +
-          password +
+          contrasena +
           "|" +
           carrera +
           "|" +
@@ -92,7 +93,7 @@ sshClient.on("ready", () => {
           "|" +
           ano_ingreso +
           "|" +
-          "1";
+          es_admin;
         console.log({ requestMessage });
         stream.write(requestMessage);
         stream.on("data", (data) => {
@@ -114,9 +115,10 @@ sshClient.on("ready", () => {
           "Actualizacion de Contraseña, por favor rellene los siguientes campos:",
           "\n"
         );
-        const mail = prompt("Ingrese su correo: ");
-        const pass = prompt("Ingrese su contraseña: ");
-        const requestMessage = "00011usuar|update" + "|" + pass + "|" + mail;
+        const correo = prompt("Ingrese su correo: ");
+        const contrasena = prompt("Ingrese su contraseña: ");
+        const requestMessage =
+          "00011usuar|update" + "|" + contrasena + "|" + correo;
         console.log({ requestMessage });
         stream.write(requestMessage);
         stream.on("data", (data) => {
@@ -139,11 +141,11 @@ sshClient.on("ready", () => {
           "Eliminar Usuario, por favor rellene los siguientes campos:",
           "\n"
         );
-        const mail = prompt("Ingrese su correo: ");
-        const pass = prompt("Ingrese su contraseña: ");
+        const correo = prompt("Ingrese su correo: ");
+        const contrasena = prompt("Ingrese su contraseña: ");
         const rut = prompt("Ingrese su rut: ");
         const requestMessage =
-          "00011usuar|delete" + "|" + rut + "|" + mail + "|" + pass;
+          "00011usuar|delete" + "|" + rut + "|" + correo + "|" + contrasena;
         console.log({ requestMessage });
         stream.write(requestMessage);
         stream.on("data", (data) => {
@@ -166,9 +168,9 @@ sshClient.on("ready", () => {
           "Inicio de Sesion, por favor rellene los siguientes campos: ",
           "\n"
         );
-        const mail = prompt("Ingrese su correo: ");
-        const pass = prompt("Ingrese su contraseña: ");
-        const requestMessage = "00005isess" + "|" + mail + "|" + pass;
+        const correo = prompt("Ingrese su correo: ");
+        const contrasena = prompt("Ingrese su contraseña: ");
+        const requestMessage = "00005isess" + "|" + correo + "|" + contrasena;
         console.log({ requestMessage });
         stream.write(requestMessage);
         stream.on("data", (data) => {

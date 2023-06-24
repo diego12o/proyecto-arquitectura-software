@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS curso (
 
 CREATE TABLE IF NOT EXISTS profesores (
   id SERIAL PRIMARY KEY,
-  mail varchar(50) NOT NULL,
+  correo varchar(50) NOT NULL,
   nombre varchar(50) NOT NULL
 );
 
@@ -29,10 +29,10 @@ CREATE TABLE IF NOT EXISTS evaluaciones (
 
 CREATE TABLE IF NOT EXISTS usuario (
   rut SERIAL PRIMARY KEY,
-  mail varchar(50) NOT NULL,
+  correo varchar(50) NOT NULL,
   nombre varchar(50) NOT NULL,
-  password varchar(50) NOT NULL,
+  contrasena varchar(50) NOT NULL,
   ano_ingreso date NOT NULL,
   carrera varchar(50) NOT NULL,
-  tipo smallint NOT NULL DEFAULT '0'
+  es_admin boolean NOT NULL DEFAULT false
 );
