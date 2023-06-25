@@ -1,4 +1,7 @@
 const SSHTunnel = require("../../utils/sshTunnel.js");
+const {
+  excecuteProfesorAction,
+} = require("./entityActions/profesor.action.js");
 const { executeUserAction } = require("./entityActions/user.action.js");
 
 function handler(data, stream) {
@@ -24,6 +27,8 @@ function handler(data, stream) {
     switch (entity) {
       case "user":
         return executeUserAction(action, params, stream);
+      case "profesor":
+        return excecuteProfesorAction(action, params, stream);
     }
   }
 }

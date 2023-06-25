@@ -1,3 +1,5 @@
+const { formatMessageWithLengthPrefix } = require("../utils/messageFormatter");
+
 require("dotenv").config();
 const Client = require("ssh2").Client;
 const prompt = require("prompt-sync")({ sigint: true });
@@ -41,7 +43,9 @@ sshClient.on("ready", () => {
       const f = "2. Cambiar contraseña";
       const g = "3. Eliminar usuario";
       const h = "4. Iniciar Sesion";
-      const i = "0. Salir de la aplicacion";
+      const i = "5. Crear Profesor";
+      const j = "6. Eliminar Profesor";
+      const z = "0. Salir de la aplicacion";
       console.log(
         a,
         "\n",
@@ -60,6 +64,10 @@ sshClient.on("ready", () => {
         h,
         "\n",
         i,
+        "\n",
+        j,
+        "\n",
+        z,
         "\n"
       );
       const op = prompt("");
@@ -184,6 +192,57 @@ sshClient.on("ready", () => {
           }
         });
       }
+
+      if (op == 5) {
+        console.log("\n");
+        console.log(
+          "Crear Profesor, por favor rellene los siguientes campos: ",
+          "\n"
+        );
+        const nombre = prompt("Ingrese nombre del nuevo profesor: ");
+        const correo = prompt("Ingrese correo del nuevo profesor: ");
+        const requestMessage = formatMessageWithLengthPrefix(
+          "profe" + "|profesor|create|" + correo + "|" + nombre
+        );
+        console.log({ requestMessage });
+        stream.write(requestMessage);
+        stream.on("data", (data) => {
+          const x = data.toString();
+          console.log({ messageResponse: x });
+          var datos = x.slice(12);
+          if (datos == "exito") {
+            console.log("Profesor creado");
+          } else {
+            console.log("Error al crear Profesor");
+          }
+        });
+      }
+
+      if (op == 6) {
+        console.log("\n");
+        console.log(
+          "Eliminar Profesor, por favor rellene los siguientes campos: ",
+          "\n"
+        );
+        const correo = prompt("Ingrese el correo del profesor a eliminar: ");
+
+        const requestMessage = formatMessageWithLengthPrefix(
+          "profe" + "|profesor|delete|" + correo
+        );
+        console.log({ requestMessage });
+        stream.write(requestMessage);
+        stream.on("data", (data) => {
+          const x = data.toString();
+          console.log({ messageResponse: x });
+          var datos = x.slice(12);
+          if (datos == "eliminado") {
+            console.log("Profesor eliminado");
+          } else {
+            console.log("Error al eliminar Profesor");
+          }
+        });
+      }
+
       // Recibir datos desde el túnel SSH
       // Cerrar el túnel SSH y la conexión SSH cuando hayas terminado
       stream.on("close", () => {
