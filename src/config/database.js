@@ -3,7 +3,7 @@ const Pool = require("pg").Pool;
 const pool = new Pool({
   host: "localhost",
   user: "root",
-  password: "password",
+  password: "123",
   database: "arquisoft",
 });
 
