@@ -5,11 +5,11 @@ class EvaluacionRepository {
     this.pool = pool;
   }
 
-  async addEvaluacion(id_profesor_curso, comentario, nota, fecha) {
+  async addEvaluacion(rut_usuario, id_profesor_curso, comentario, nota, fecha) {
     try {
       await this.pool.query(
-        "INSERT INTO evaluacion(id_profesor_curso, comentario, nota, fecha) VALUES($1, $2, $3, $4)",
-        [id_profesor_curso, comentario, nota, fecha]
+        "INSERT INTO evaluacion(rut_usuario, id_profesor_curso, comentario, nota, fecha) VALUES($1, $2, $3, $4)",
+        [rut_usuario, id_profesor_curso, comentario, nota, fecha]
       );
       const result = await this.pool.query(
         "SELECT * FROM evaluacion WHERE id_profesor_curso = $1 AND comentario = $2 AND nota = $3 AND fecha = $4",
