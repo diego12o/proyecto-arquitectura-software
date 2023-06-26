@@ -27,7 +27,7 @@ sshClient.on("ready", () => {
     0,
     targetHost,
     targetPort,
-    (err, stream) => {
+    async (err, stream) => {
       if (err) {
         console.error("Error en el canal de reenvío de puertos:", err);
         sshClient.end();
@@ -37,210 +37,249 @@ sshClient.on("ready", () => {
       console.log("Tunel SSH implementado exitosamente");
       const a = "Hola";
       const b = "Bienvenido a la plataforma de criticas UDP";
-      const c = "¿Que desea hacer?";
-      const d = "Opciones: ";
-      const e = "1. Registrar usuario";
-      const f = "2. Cambiar contraseña";
-      const g = "3. Eliminar usuario";
-      const h = "4. Iniciar Sesion";
-      const i = "5. Crear Profesor";
-      const j = "6. Eliminar Profesor";
-      const z = "0. Salir de la aplicacion";
-      console.log(
-        a,
-        "\n",
-        b,
-        "\n",
-        c,
-        "\n",
-        d,
-        "\n",
-        e,
-        "\n",
-        f,
-        "\n",
-        g,
-        "\n",
-        h,
-        "\n",
-        i,
-        "\n",
-        j,
-        "\n",
-        z,
-        "\n"
-      );
-      const op = prompt("");
-      if (op == 1) {
-        console.log("\n");
-        console.log(
-          "Registro de Usuario, por favor rellene los siguientes campos:",
-          "\n"
-        );
-        const rut = prompt("Ingrese su rut: ");
-        const correo = prompt("Ingrese su correo: ");
-        const contrasena = prompt("Ingrese su contraseña: ");
-        const carrera = prompt("Ingrese la carrera a la que pertenece: ");
-        const nombre = prompt("Ingrese su nombre: ");
-        const ano_ingreso = prompt(
-          "Ingrese su año de ingreso a la universidad: "
-        );
-        const es_admin = false; // Definido por defecto
-        const requestMessage =
-          "00011usuar|create" +
-          "|" +
-          rut +
-          "|" +
-          correo +
-          "|" +
-          contrasena +
-          "|" +
-          carrera +
-          "|" +
-          nombre +
-          "|" +
-          ano_ingreso +
-          "|" +
-          es_admin;
-        console.log({ requestMessage });
-        stream.write(requestMessage);
-        stream.on("data", (data) => {
-          const x = data.toString();
-          console.log({ messageResponse: x });
+      console.log(a, "\n", b);
+      var loop = true;
+      while (loop) {
+        await (async function () {
+          const c = "¿Que desea hacer?";
+          const d = "Opciones: ";
+          const e = "1. Registrar usuario";
+          const f = "2. Cambiar contraseña";
+          const g = "3. Eliminar usuario";
+          const h = "4. Iniciar Sesion";
+          const i = "5. Crear Profesor";
+          const j = "6. Eliminar Profesor";
+          const z = "0. Salir de la aplicacion";
+          console.log(
+            "\n",
+            c,
+            "\n",
+            d,
+            "\n",
+            e,
+            "\n",
+            f,
+            "\n",
+            g,
+            "\n",
+            h,
+            "\n",
+            i,
+            "\n",
+            j,
+            "\n",
+            z,
+            "\n"
+          );
+          const op = prompt("");
+          if (op == 1) {
+            console.log("\n");
+            console.log(
+              "Registro de Usuario, por favor rellene los siguientes campos:",
+              "\n"
+            );
+            const rut = prompt("Ingrese su rut: ");
+            const correo = prompt("Ingrese su correo: ");
+            const contrasena = prompt("Ingrese su contraseña: ");
+            const carrera = prompt("Ingrese la carrera a la que pertenece: ");
+            const nombre = prompt("Ingrese su nombre: ");
+            const ano_ingreso = prompt(
+              "Ingrese su año de ingreso a la universidad: "
+            );
+            const es_admin = false; // Definido por defecto
+            const requestMessage =
+              "00011usuar|create" +
+              "|" +
+              rut +
+              "|" +
+              correo +
+              "|" +
+              contrasena +
+              "|" +
+              carrera +
+              "|" +
+              nombre +
+              "|" +
+              ano_ingreso +
+              "|" +
+              es_admin;
+            console.log({ requestMessage });
+            stream.write(requestMessage);
 
-          var datos = x.slice(12);
-          if (datos == "exito") {
-            console.log("Usuario creado");
-          } else {
-            console.log("Fracaso al hacer el usuario");
+            await new Promise((resolve, reject) => {
+              stream.once("data", (data) => {
+                const x = data.toString();
+                console.log({ messageResponse: x });
+
+                var datos = x.slice(12);
+                if (datos == "exito") {
+                  console.log("Usuario creado");
+                } else {
+                  console.log("Fracaso al hacer el usuario");
+                }
+                resolve();
+              });
+            });
           }
-        });
-      }
 
-      if (op == 2) {
-        console.log("\n");
-        console.log(
-          "Actualizacion de Contraseña, por favor rellene los siguientes campos:",
-          "\n"
-        );
-        const correo = prompt("Ingrese su correo: ");
-        const contrasena = prompt("Ingrese su contraseña: ");
-        const requestMessage =
-          "00011usuar|update" + "|" + contrasena + "|" + correo;
-        console.log({ requestMessage });
-        stream.write(requestMessage);
-        stream.on("data", (data) => {
-          const x = data.toString();
-          console.log({ messageResponse: x });
+          if (op == 2) {
+            console.log("\n");
+            console.log(
+              "Actualizacion de Contraseña, por favor rellene los siguientes campos:",
+              "\n"
+            );
+            const correo = prompt("Ingrese su correo: ");
+            const contrasena = prompt("Ingrese su contraseña: ");
+            const requestMessage =
+              "00011usuar|update" + "|" + contrasena + "|" + correo;
+            console.log({ requestMessage });
+            stream.write(requestMessage);
 
-          var datos = x.slice(12);
+            await new Promise((resolve, reject) => {
+              stream.once("data", (data) => {
+                const x = data.toString();
+                console.log({ messageResponse: x });
 
-          if (datos == "actualizado") {
-            console.log("Contraseña actualizada");
-          } else {
-            console.log("Contraseña NO actualizada");
+                var datos = x.slice(12);
+
+                if (datos == "actualizado") {
+                  console.log("Contraseña actualizada");
+                } else {
+                  console.log("Contraseña NO actualizada");
+                }
+                resolve();
+              });
+            });
           }
-        });
-      }
 
-      if (op == 3) {
-        console.log("\n");
-        console.log(
-          "Eliminar Usuario, por favor rellene los siguientes campos:",
-          "\n"
-        );
-        const correo = prompt("Ingrese su correo: ");
-        const contrasena = prompt("Ingrese su contraseña: ");
-        const rut = prompt("Ingrese su rut: ");
-        const requestMessage =
-          "00011usuar|delete" + "|" + rut + "|" + correo + "|" + contrasena;
-        console.log({ requestMessage });
-        stream.write(requestMessage);
-        stream.on("data", (data) => {
-          const x = data.toString();
-          console.log({ messageResponse: x });
+          if (op == 3) {
+            console.log("\n");
+            console.log(
+              "Eliminar Usuario, por favor rellene los siguientes campos:",
+              "\n"
+            );
+            const correo = prompt("Ingrese su correo: ");
+            const contrasena = prompt("Ingrese su contraseña: ");
+            const rut = prompt("Ingrese su rut: ");
+            const requestMessage =
+              "00011usuar|delete" + "|" + rut + "|" + correo + "|" + contrasena;
+            console.log({ requestMessage });
+            stream.write(requestMessage);
 
-          var datos = x.slice(12);
+            await new Promise((resolve, reject) => {
+              stream.once("data", (data) => {
+                const x = data.toString();
+                console.log({ messageResponse: x });
 
-          if (datos == "eliminado") {
-            console.log("Usuario Eliminado");
-          } else {
-            console.log("Usuario NO eliminado");
+                var datos = x.slice(12);
+
+                if (datos == "eliminado") {
+                  console.log("Usuario Eliminado");
+                } else {
+                  console.log("Usuario NO eliminado");
+                }
+                resolve();
+              });
+            });
           }
-        });
-      }
 
-      if (op == 4) {
-        console.log("\n");
-        console.log(
-          "Inicio de Sesion, por favor rellene los siguientes campos: ",
-          "\n"
-        );
-        const correo = prompt("Ingrese su correo: ");
-        const contrasena = prompt("Ingrese su contraseña: ");
-        const requestMessage = "00005isess" + "|" + correo + "|" + contrasena;
-        console.log({ requestMessage });
-        stream.write(requestMessage);
-        stream.on("data", (data) => {
-          const x = data.toString();
-          console.log({ messageResponse: x });
-          var datos = x.slice(12);
-          if (datos == "existe") {
-            console.log("Sesion iniciada");
-          } else {
-            console.log("Error al iniciar sesion");
+          // Opción 4
+          if (op == 4) {
+            console.log("\n");
+            console.log(
+              "Inicio de Sesion, por favor rellene los siguientes campos: ",
+              "\n"
+            );
+            const correo = prompt("Ingrese su correo: ");
+            const contrasena = prompt("Ingrese su contraseña: ");
+            const requestMessage =
+              "00005isess" + "|" + correo + "|" + contrasena;
+            console.log({ requestMessage });
+            stream.write(requestMessage);
+
+            await new Promise((resolve, reject) => {
+              stream.once("data", (data) => {
+                const x = data.toString();
+                console.log({ messageResponse: x });
+
+                var datos = x.slice(12);
+
+                if (datos == "existe") {
+                  console.log("Sesion iniciada");
+                } else {
+                  console.log("Error al iniciar sesion");
+                }
+                resolve();
+              });
+            });
           }
-        });
-      }
 
-      if (op == 5) {
-        console.log("\n");
-        console.log(
-          "Crear Profesor, por favor rellene los siguientes campos: ",
-          "\n"
-        );
-        const nombre = prompt("Ingrese nombre del nuevo profesor: ");
-        const correo = prompt("Ingrese correo del nuevo profesor: ");
-        const requestMessage = formatMessageWithLengthPrefix(
-          "profe" + "|profesor|create|" + correo + "|" + nombre
-        );
-        console.log({ requestMessage });
-        stream.write(requestMessage);
-        stream.on("data", (data) => {
-          const x = data.toString();
-          console.log({ messageResponse: x });
-          var datos = x.slice(12);
-          if (datos == "exito") {
-            console.log("Profesor creado");
-          } else {
-            console.log("Error al crear Profesor");
+          // Opción 5
+          if (op == 5) {
+            console.log("\n");
+            console.log(
+              "Crear Profesor, por favor rellene los siguientes campos: ",
+              "\n"
+            );
+            const nombre = prompt("Ingrese nombre del nuevo profesor: ");
+            const correo = prompt("Ingrese correo del nuevo profesor: ");
+            const requestMessage = formatMessageWithLengthPrefix(
+              "profe" + "|profesor|create|" + correo + "|" + nombre
+            );
+            console.log({ requestMessage });
+            stream.write(requestMessage);
+
+            await new Promise((resolve, reject) => {
+              stream.once("data", (data) => {
+                const x = data.toString();
+                console.log({ messageResponse: x });
+                var datos = x.slice(12);
+                if (datos == "exito") {
+                  console.log("Profesor creado");
+                } else {
+                  console.log("Error al crear Profesor");
+                }
+                resolve();
+              });
+            });
           }
-        });
-      }
 
-      if (op == 6) {
-        console.log("\n");
-        console.log(
-          "Eliminar Profesor, por favor rellene los siguientes campos: ",
-          "\n"
-        );
-        const correo = prompt("Ingrese el correo del profesor a eliminar: ");
+          // Opción 6
+          if (op == 6) {
+            console.log("\n");
+            console.log(
+              "Eliminar Profesor, por favor rellene los siguientes campos: ",
+              "\n"
+            );
+            const correo = prompt(
+              "Ingrese el correo del profesor a eliminar: "
+            );
+            const requestMessage = formatMessageWithLengthPrefix(
+              "profe" + "|profesor|delete|" + correo
+            );
+            console.log({ requestMessage });
+            stream.write(requestMessage);
 
-        const requestMessage = formatMessageWithLengthPrefix(
-          "profe" + "|profesor|delete|" + correo
-        );
-        console.log({ requestMessage });
-        stream.write(requestMessage);
-        stream.on("data", (data) => {
-          const x = data.toString();
-          console.log({ messageResponse: x });
-          var datos = x.slice(12);
-          if (datos == "eliminado") {
-            console.log("Profesor eliminado");
-          } else {
-            console.log("Error al eliminar Profesor");
+            await new Promise((resolve, reject) => {
+              stream.once("data", (data) => {
+                const x = data.toString();
+                console.log({ messageResponse: x });
+                var datos = x.slice(12);
+                if (datos == "eliminado") {
+                  console.log("Profesor eliminado");
+                } else {
+                  console.log("Error al eliminar Profesor");
+                }
+                resolve();
+              });
+            });
           }
-        });
+
+          if (op == 0) {
+            console.log("Hasta la proxima!");
+            loop = false;
+          }
+        })();
       }
 
       // Recibir datos desde el túnel SSH

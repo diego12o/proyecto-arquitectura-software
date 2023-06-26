@@ -1,19 +1,19 @@
 const pool = require("../config/database.js");
 
-class ProfesorRepository {
+class ProfesorCursoRepository {
   constructor() {
     this.pool = pool;
   }
 
-  async addProfesor(correo, nombre) {
+  async addProfesorCurso(codigo_curso, id_profesor) {
     try {
       await this.pool.query(
-        "INSERT INTO profesor(correo, nombre) VALUES($1, $2)",
-        [correo, nombre]
+        "INSERT INTO profesor_curso(codigo_curso, id_profesor) VALUES($1, $2)",
+        [codigo_curso, id_profesor]
       );
       const result = await this.pool.query(
-        "SELECT * FROM profesor WHERE correo = $1 AND nombre = $2",
-        [correo, nombre]
+        "SELECT * FROM profesor_curso WHERE codigo_curso = $1 AND id_profesor = $2",
+        [codigo_curso, id_profesor]
       );
       return result.rows.length > 0 ? true : false;
     } catch (error) {
@@ -22,10 +22,10 @@ class ProfesorRepository {
     }
   }
 
-  async deleteProfesor(id) {
+  async deleteProfesorCurso(id) {
     try {
       const result = await this.pool.query(
-        "DELETE FROM profesor WHERE id = $1",
+        "DELETE FROM profesor_curso WHERE id = $1",
         [id]
       );
       return result.rowCount > 0 ? true : false;
@@ -35,24 +35,24 @@ class ProfesorRepository {
     }
   }
 
-  async findProfesorById(id) {
+  async deleteAllByProfesorId(id_profesor) {
     try {
       const result = await this.pool.query(
-        "SELECT * FROM profesor WHERE id = $1",
-        [id]
+        "DELETE FROM profesor_curso WHERE id_profesor = $1",
+        [id_profesor]
       );
-      return result.rows[0];
+      return result.rowCount > 0 ? true : false;
     } catch (error) {
       console.error(error);
-      return null;
+      return false;
     }
   }
 
-  async findProfesorByEmail(correo) {
+  async findProfesorCursoById(id) {
     try {
       const result = await this.pool.query(
-        "SELECT * FROM profesor WHERE correo = $1",
-        [correo]
+        "SELECT * FROM profesor_curso WHERE id = $1",
+        [id]
       );
       return result.rows[0];
     } catch (error) {
@@ -62,4 +62,4 @@ class ProfesorRepository {
   }
 }
 
-module.exports = { ProfesorRepository };
+module.exports = { ProfesorCursoRepository };

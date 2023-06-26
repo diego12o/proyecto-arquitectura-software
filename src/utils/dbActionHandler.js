@@ -14,7 +14,7 @@ function sendActionToDBAndHandleResponse(
   console.log({ MessageToSVDB });
   stream.write(MessageToSVDB);
 
-  return stream.on("data", (data) => {
+  stream.once("data", (data) => {
     const responseMessageSVDB = data.toString();
 
     const idServiceBDResponse = responseMessageSVDB.slice(5, 10);
@@ -33,7 +33,7 @@ function sendActionToDBAndHandleResponse(
       const message = isSuccess ? successMsg : errorMsg;
       const messageToBus = formatMessageWithLengthPrefix(message);
       console.log({ messageToBus });
-      return stream.write(messageToBus);
+      stream.write(messageToBus);
     }
   });
 }

@@ -1,4 +1,10 @@
 const {
+  EvaluacionRepository,
+} = require("../../../repositories/evaluacion.repository");
+const {
+  ProfesorCursoRepository,
+} = require("../../../repositories/profesor-curso.repository");
+const {
   ProfesorRepository,
 } = require("../../../repositories/profesor.repository");
 const {
@@ -7,6 +13,9 @@ const {
 
 async function excecuteProfesorAction(action, params, stream) {
   const profesorRepository = new ProfesorRepository();
+  const profesorCursoRepository = new ProfesorCursoRepository();
+  const evaluacionRepository = new EvaluacionRepository();
+
   switch (action) {
     case "create": {
       const [correo, nombre] = params;
@@ -22,10 +31,18 @@ async function excecuteProfesorAction(action, params, stream) {
 
     case "delete": {
       const [correo] = params;
-      const deleted = await profesorRepository.deleteProfesor(correo);
+      const profesor = await profesorRepository.findProfesorByEmail(correo);
+      if (!profesor)
+        return stream.write(formatMessageWithLengthPrefix("DBsereliminado"));
+
+      await profesorCursoRepository.deleteAllByProfesorId(profesor.id);
+      await evaluacionRepository.deleteAllByProfesorId(profesor.id);
+      const deleted = await profesorRepository.deleteProfesor(profesor.id);
+
       const messageToBus = deleted
         ? formatMessageWithLengthPrefix("DBsereliminado")
         : formatMessageWithLengthPrefix("DBserfracaso");
+
       console.log({ messageToBus });
       return stream.write(messageToBus);
     }

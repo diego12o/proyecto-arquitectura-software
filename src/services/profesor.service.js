@@ -4,9 +4,9 @@ const sshTunnel = new SSHTunnel();
 
 function handler(data, stream) {
   const inputMessage = data.toString();
-  console.log({ inputMessage });
 
   if (inputMessage === "00012sinitOKprofe") {
+    console.log({ inputMessage });
     console.log("Servicio Inicio de Sesion enlazado al bus");
     return;
   }
