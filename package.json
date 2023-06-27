@@ -13,7 +13,8 @@
     "start:svDB": "node src/services/database/database.service.js",
     "start:svSession": "node src/services/sesion.service.js",
     "start:svUser": "node src/services/usuario.service.js",
-    "start:svProfe": "node src/services/profesor.service.js"
+    "start:svProfe": "node src/services/profesor.service.js",
+    "start:svEval": "node src/services/evaluation.service.js"
   },
   "keywords": [],
   "author": "",
