@@ -4,6 +4,7 @@ const {
 } = require("./entityActions/profesor.action.js");
 const { executeUserAction } = require("./entityActions/user.action.js");
 const { executeEvaluationAction } = require("./entityActions/evaluation.action.js");
+const { executeCursosAction } = require("./entityActions/cursos.action.js");
 
 function handler(data, stream) {
   const inputMessage = data.toString();
@@ -32,6 +33,8 @@ function handler(data, stream) {
         return excecuteProfesorAction(action, params, stream);
       case "evaluation":
         return executeEvaluationAction(action, params, stream);
+      case "cursos":
+        return executeCursosAction(action, params, stream);
     }
   }
 }

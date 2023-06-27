@@ -1,5 +1,4 @@
 const { formatMessageWithLengthPrefix } = require("../utils/messageFormatter");
-const pws = require('./encriptado');// Para usar el servicio debe consultar o agregar la contraseña como pws.enc(password)
 const token = require('./token')
 require("dotenv").config();
 
@@ -153,7 +152,7 @@ sshClient.on("ready", () => {
 
 				} else {
 					if (localStorage.getItem('user') === 'ADMIN') { //usuario admin ya logeado
-						let consultar = ["Bienvenido de vuelta a la plataforma de criticas UDP", "¿Que desea hacer?", "Opciones: ", "1. Cambiar contraseña", "2. Cerrar Sesion", "3. Agregar Curso", "4. Editar Curso", "5. Eliminar Curso", "6. Agregar Profesor", "7. Editar Curso", "8. Eliminar Curso", "9. Eliminar Usuario", "0. Salir de la plataforma"]
+						let consultar = ["Bienvenido de vuelta a la plataforma de criticas UDP", "¿Que desea hacer?", "Opciones: ", "1. Cambiar contraseña", "2. Cerrar Sesion", "3. Agregar Curso", "4. Editar Curso", "5. Eliminar Curso", "6. Agregar Profesor","7. Vincular profesor a curso", "8. Editar profesor", "9. Eliminar profesor", "10. Eliminar Usuario", "0. Salir de la plataforma"]
 						for (let i of consultar) {
 							console.log(consultar[i]);
 						}
@@ -197,6 +196,81 @@ sshClient.on("ready", () => {
 								"Saliendo de la sesion: ",
 							);
 
+						}
+						if (op == 3) {
+							console.log("\n");
+							console.log(
+								"Creacion de curso, por favor rellene los siguientes campos:",
+								"\n"
+							);
+							const codigo = prompt("Ingrese el codigo del curso: ");
+							const carrera = prompt("Ingrese la carrera en la que se imparte: ");
+							const nombre = prompt("Ingrese el nombre del curso: ");
+							const requestMessage =
+								"00011curso|create" + "|" + codigo + "|" + carrera+ "|"+ nombre;
+							console.log({ requestMessage });
+							stream.write(requestMessage);
+							stream.on("data", (data) => {
+								const x = data.toString();
+								console.log({ messageResponse: x });
+
+								var datos = x.slice(12);
+
+								if (datos == "exito") {
+									console.log("Curso creado con exito");
+								} else {
+									console.log("No se pudo crear el curso");
+								}
+							});
+						}
+						if (op == 4) {
+							console.log("\n");
+							console.log(
+								"Actualizacion de Curso, por favor rellene los siguientes campos:",
+								"\n"
+							);
+							const codigo = prompt("Ingrese el codigo del curso: ");
+							const nombre = prompt("Ingrese el nuevo nombre del curso: ");
+							const requestMessage =
+								"00011curso|update" + "|" + nombre + "|" + codigo;
+							console.log({ requestMessage });
+							stream.write(requestMessage);
+							stream.on("data", (data) => {
+								const x = data.toString();
+								console.log({ messageResponse: x });
+
+								var datos = x.slice(12);
+
+								if (datos == "actualizado") {
+									console.log("Curso actualizada");
+								} else {
+									console.log("Curso NO actualizada");
+								}
+							});
+						}
+						if (op == 5) {
+							console.log("\n");
+							console.log(
+								"Eliminacion de curso, por favor rellene los siguientes campos:",
+								"\n"
+							);
+							const codigo = prompt("Ingrese el codigo del curso: ");
+							const requestMessage =
+								"00011curso|delete" + "|"  + codigo;
+							console.log({ requestMessage });
+							stream.write(requestMessage);
+							stream.on("data", (data) => {
+								const x = data.toString();
+								console.log({ messageResponse: x });
+
+								var datos = x.slice(12);
+
+								if (datos == "eliminado") {
+									console.log("Curso eliminado");
+								} else {
+									console.log("Curso NO eliminado");
+								}
+							});
 						}
 
 					} else {   //usuario alumno ya logeado
