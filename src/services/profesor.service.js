@@ -11,7 +11,6 @@ function handler(data, stream) {
     return;
   }
 
-  //00046profe|profesor|create|felipe@correo.com|felipe
   const IdService = inputMessage.slice(5, 10);
   if (IdService === "profe") {
     console.log({ inputMessage });
@@ -19,14 +18,22 @@ function handler(data, stream) {
     let sucessMsg, errorMsg;
     switch (action) {
       case "create": {
+        //00046profe|profesor|create|felipe@correo.com|felipe
         sucessMsg = IdService + "exito";
         errorMsg = IdService + "fracaso";
         break;
       }
       case "delete": {
+        //00046profe|profesor|delete|felipe@correo.com
         sucessMsg = IdService + "eliminado";
         errorMsg = IdService + "noeliminado";
         break;
+      }
+      case "enroll": {
+        //00046profe|profesor|enroll|${codigo_curso}|${id_profesor}
+        sucessMsg = IdService + "ingresado";
+        errorMsg = IdService + "noingresado";
+        entity = "profesorCurso";
       }
     }
 
