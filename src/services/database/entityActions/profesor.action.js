@@ -1,6 +1,6 @@
 const {
-  EvaluacionRepository,
-} = require("../../../repositories/evaluacion.repository");
+  EvaluationRepository,
+} = require("../../../repositories/evaluation.repository");
 const {
   ProfesorCursoRepository,
 } = require("../../../repositories/profesor-curso.repository");
@@ -14,7 +14,7 @@ const {
 async function excecuteProfesorAction(action, params, stream) {
   const profesorRepository = new ProfesorRepository();
   const profesorCursoRepository = new ProfesorCursoRepository();
-  const evaluacionRepository = new EvaluacionRepository();
+  const evaluationRepository = new EvaluationRepository();
 
   switch (action) {
     case "create": {
@@ -36,7 +36,7 @@ async function excecuteProfesorAction(action, params, stream) {
         return stream.write(formatMessageWithLengthPrefix("DBsereliminado"));
 
       await profesorCursoRepository.deleteAllByProfesorId(profesor.id);
-      await evaluacionRepository.deleteAllByProfesorId(profesor.id);
+      await evaluationRepository.deleteAllByProfesorId(profesor.id);
       const deleted = await profesorRepository.deleteProfesor(profesor.id);
 
       const messageToBus = deleted
