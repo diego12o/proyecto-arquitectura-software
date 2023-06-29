@@ -1,5 +1,5 @@
 const pool = require("../config/database.js");
-const pws = require('./encriptado');// Para usar el servicio debe consultar o agregar la contraseña como pws.enc(password)
+const pws = require("./encriptado.js"); // Para usar el servicio debe consultar o agregar la contraseña como pws.enc(password)
 
 class UserRepository {
   constructor() {
@@ -18,7 +18,15 @@ class UserRepository {
     try {
       await this.pool.query(
         "INSERT INTO usuario(rut, correo, contrasena, carrera, nombre, ano_ingreso, es_admin) VALUES($1, $2, $3, $4, $5, $6, $7)",
-        [rut, correo, pws.enc(contrasena), carrera, nombre, ano_ingreso, es_admin]
+        [
+          rut,
+          correo,
+          pws.enc(contrasena),
+          carrera,
+          nombre,
+          ano_ingreso,
+          es_admin,
+        ]
       );
       const result = await this.pool.query(
         "SELECT * FROM usuario WHERE rut = $1",

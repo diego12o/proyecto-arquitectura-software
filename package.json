@@ -6,10 +6,12 @@
     "dotenv": "^16.3.1",
     "pg": "^8.11.0",
     "prompt-sync": "^4.2.0",
+    "sha-1": "^1.0.0",
     "ssh2": "^1.13.0"
   },
   "scripts": {
     "start:cli": "node src/client/base.js",
+    "start:cli-temp": "node src/client/client-temp.js",
     "start:svDB": "node src/services/database/database.service.js",
     "start:svSession": "node src/services/sesion.service.js",
     "start:svUser": "node src/services/usuario.service.js",

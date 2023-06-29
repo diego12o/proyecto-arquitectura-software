@@ -21,13 +21,10 @@ CREATE TABLE IF NOT EXISTS profesor_curso (
 CREATE TABLE IF NOT EXISTS evaluacion (
   id SERIAL PRIMARY KEY,
   rut_usuario int NOT NULL,
-  rut_usuario int NOT NULL,
   id_profesor_curso int NOT NULL,
   comentario text NOT NULL,
   nota real NOT NULL DEFAULT '1',
   fecha timestamp NOT NULL,
-  FOREIGN KEY (id_profesor_curso) REFERENCES profesor_curso (id),
-  FOREIGN KEY (rut_usuario) REFERENCES usuario (rut)
   FOREIGN KEY (id_profesor_curso) REFERENCES profesor_curso (id),
   FOREIGN KEY (rut_usuario) REFERENCES usuario (rut)
 );
