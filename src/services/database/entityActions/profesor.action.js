@@ -13,14 +13,24 @@ const {
 
 async function excecuteProfesorAction(action, params, stream) {
   const profesorRepository = new ProfesorRepository();
-  const profesorCursoRepository = new ProfesorCursoRepository();
-  const evaluationRepository = new EvaluationRepository();
 
   switch (action) {
     case "create": {
       const [correo, nombre] = params;
       console.log({ correo, nombre });
       const success = await profesorRepository.addProfesor(correo, nombre);
+      const messageToBus = success
+        ? formatMessageWithLengthPrefix("DBserexito")
+        : formatMessageWithLengthPrefix("DBserfracaso");
+
+      console.log({ messageToBus });
+      return stream.write(messageToBus);
+    }
+
+    case "update": {
+      const [id, correo, nombre] = params;
+      console.log({ correo, nombre });
+      const success = await profesorRepository.updateProfe(id, correo, nombre);
       const messageToBus = success
         ? formatMessageWithLengthPrefix("DBserexito")
         : formatMessageWithLengthPrefix("DBserfracaso");
@@ -40,9 +50,6 @@ async function excecuteProfesorAction(action, params, stream) {
         console.log({ messageToBus });
         return stream.write(messageToBus);
       }
-
-      await profesorCursoRepository.deleteAllByProfesorId(profesor.id);
-      await evaluationRepository.deleteAllByProfesorId(profesor.id);
       const deleted = await profesorRepository.deleteProfesor(profesor.id);
 
       const messageToBus = deleted
