@@ -63,6 +63,15 @@ function handler(data, stream) {
           idService + "actualizado",
           idService + "noactualizado"
         );
+      case "editEvaluation":
+        return sendActionToDBAndHandleResponse(
+          stream,
+          "evaluation",
+          action,
+          params,
+          idService + "actualizado",
+          idService + "noactualizado"
+        );
       case "deleteEvaluation":
         return sendActionToDBAndHandleResponse(
           stream,
