@@ -220,7 +220,7 @@ sshClient.on("ready", () => {
           if (opAdmin == 5) {
             const nombre = prompt("Ingrese el nuevo nombre del profesor: ");
             const correo = prompt("Ingrese el nuevo correo: ");
-            const requestMessage = formatMessageWithLengthPrefix("profe|Update" + "|" + nombre + "|" + correo );
+            const requestMessage = formatMessageWithLengthPrefix("profe|update" + "|" + nombre + "|" + correo );
             console.log({ requestMessage });
             stream.write(requestMessage);
             stream.once("data", (data) => {
@@ -235,9 +235,29 @@ sshClient.on("ready", () => {
             });
           }
           if (opAdmin == 6) {
+            const correo = prompt(
+              "Ingrese el correo del profesor a eliminar: "
+            );
+            const requestMessage = formatMessageWithLengthPrefix(
+              "profe|delete|" + correo
+            );
+            console.log({ requestMessage });
+            stream.write(requestMessage);
+            stream.once("data", (data) => {
+            const x = data.toString();
+            console.log({ messageResponse: x });
+            var datos = x.slice(12);
+            if (datos == "eliminado") {
+                console.log("Profesor eliminado");
+            } else {
+                console.log("Profesor NO eliminado");
+              }
+            });
+          }
+          if (opAdmin == 7) {
+            // Delete usuario
             
           }
-
 
 
         }
