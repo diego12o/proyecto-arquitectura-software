@@ -519,6 +519,15 @@ sshClient.on("ready", () => {
                 eliminar comentario,
                 atras (quizas necesite un ciclo do while)
               */
+              console.log(
+                '\nOpciones:' +
+                '\n1. Cambiar evaluación' +
+                '\n2. Eliminar evaluación' +
+                '\n3. Eliminar cualquier evaluación (solo admin)' +
+                '\n0. Salir'
+              )
+
+
               if (op == 1) {
                 const nota = prompt("Ingrese la nueva nota de la evaluacion: ");
                 const rut_usuario = isAdmin
@@ -609,10 +618,6 @@ sshClient.on("ready", () => {
                     console.log("Error eliminando la evaluacion");
                   }
                 });
-              }
-
-              if (op == 4) {
-                
               }
 
               if (op == 0) {
