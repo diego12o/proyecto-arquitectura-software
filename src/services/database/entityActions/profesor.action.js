@@ -32,8 +32,14 @@ async function excecuteProfesorAction(action, params, stream) {
     case "delete": {
       const [correo] = params;
       const profesor = await profesorRepository.findProfesorByEmail(correo);
-      if (!profesor)
-        return stream.write(formatMessageWithLengthPrefix("DBsereliminado"));
+
+      if (!profesor) {
+        const messageToBus = formatMessageWithLengthPrefix(
+          "DBserfracasoNoxiste"
+        );
+        console.log({ messageToBus });
+        return stream.write(messageToBus);
+      }
 
       await profesorCursoRepository.deleteAllByProfesorId(profesor.id);
       await evaluationRepository.deleteAllByProfesorId(profesor.id);
