@@ -40,9 +40,6 @@ async function excecuteProfesorAction(action, params, stream) {
         console.log({ messageToBus });
         return stream.write(messageToBus);
       }
-
-      await profesorCursoRepository.deleteAllByProfesorId(profesor.id);
-      await evaluationRepository.deleteAllByProfesorId(profesor.id);
       const deleted = await profesorRepository.deleteProfesor(profesor.id);
 
       const messageToBus = deleted
