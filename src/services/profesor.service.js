@@ -14,7 +14,8 @@ function handler(data, stream) {
   const IdService = inputMessage.slice(5, 10);
   if (IdService === "profe") {
     console.log({ inputMessage });
-    const [entity, action, ...params] = inputMessage.slice(11).split("|");
+    const [action, ...params] = inputMessage.slice(11).split("|");
+    let entity = "profesor";
     let sucessMsg, errorMsg;
     switch (action) {
       case "create": {

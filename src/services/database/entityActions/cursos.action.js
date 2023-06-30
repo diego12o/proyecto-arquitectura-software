@@ -1,16 +1,14 @@
-const { UserRepository } = require("../../../repositories/cursos.repository");
+const { CursoRepository } = require("../../../repositories/cursos.repository");
 const {
   formatMessageWithLengthPrefix,
 } = require("../../../utils/messageFormatter");
 
 async function executeCursosAction(action, params, stream) {
-  const userRepository = new UserRepository();
+  const cursoRepository = new CursoRepository();
   switch (action) {
     case "create": {
       const [codigo, carrera, nombre] = params;
-      const success = await userRepository.addCourse(
-        codigo, carrera, nombre
-      );
+      const success = await cursoRepository.addCourse(codigo, carrera, nombre);
       const messageToBus = success
         ? formatMessageWithLengthPrefix("DBserexito")
         : formatMessageWithLengthPrefix("DBserfracaso");
@@ -20,8 +18,12 @@ async function executeCursosAction(action, params, stream) {
     }
 
     case "update": {
-      const [nombre, codigo] = params;
-      const updated = await userRepository.changePassword(updPassword, updMail);
+      const [codigo, carrera, nombre] = params;
+      const updated = await cursoRepository.updateCourse(
+        codigo,
+        carrera,
+        nombre
+      );
       const messageToBus = updated
         ? formatMessageWithLengthPrefix("DBseractualizado")
         : formatMessageWithLengthPrefix("DBserfracaso");
@@ -30,8 +32,8 @@ async function executeCursosAction(action, params, stream) {
     }
 
     case "delete": {
-      const [_, __, codigo] = params;
-      const deleted = await userRepository.deleteCourse(codigo);
+      const [codigo] = params;
+      const deleted = await cursoRepository.deleteCourse(codigo);
       const messageToBus = deleted
         ? formatMessageWithLengthPrefix("DBsereliminado")
         : formatMessageWithLengthPrefix("DBserfracaso");
@@ -45,5 +47,5 @@ async function executeCursosAction(action, params, stream) {
 }
 
 module.exports = {
-    executeCursosAction,
+  executeCursosAction,
 };

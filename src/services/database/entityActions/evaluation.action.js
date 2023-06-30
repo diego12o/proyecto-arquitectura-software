@@ -9,21 +9,20 @@ async function executeEvaluationAction(action, params, stream) {
   const evaluationRepository = new EvaluationRepository();
   switch (action) {
     case "addEvaluation": {
-      const [id_profesor_curso, comentario, nota, fecha, rut_alumno] = params;
+      const [id_profesor_curso, comentario, nota, fecha, rut_usuario] = params;
       console.log({
         id_profesor_curso,
-        id_profesor,
         comentario,
         nota,
         fecha,
-        rut_alumno,
+        rut_usuario,
       });
       const success = await evaluationRepository.addEvaluation(
         id_profesor_curso,
         comentario,
         nota,
         fecha,
-        rut_alumno
+        rut_usuario
       );
       const messageToBus = success
         ? formatMessageWithLengthPrefix("DBserexito")
@@ -45,9 +44,9 @@ async function executeEvaluationAction(action, params, stream) {
 
     case "seeEvaluation": {
       const [rut] = params;
-      const evaluations = await userRepository.deleteUser(rut);
+      const evaluations = await evaluationRepository.seeEvaluation(rut);
       const messageToBus = evaluations
-        ? formatMessageWithLengthPrefix("DBserexito")
+        ? formatMessageWithLengthPrefix("DBserexito|" + evaluations)
         : formatMessageWithLengthPrefix("DBserfracaso");
       console.log({ messageToBus });
       return stream.write(messageToBus);
@@ -56,6 +55,21 @@ async function executeEvaluationAction(action, params, stream) {
     case "seeComments": {
       const [rut] = params;
       const comments = await evaluationRepository.seeComments(rut);
+      const messageToBus = comments
+        ? formatMessageWithLengthPrefix("DBserexito")
+        : formatMessageWithLengthPrefix("DBserfracaso");
+      console.log({ messageToBus });
+      return stream.write(messageToBus);
+    }
+
+    case "updateComent": {
+      const [rut_usuario, fecha, nota, nuevo_comentario] = params;
+      const comments = await evaluationRepository.updateComment(
+        rut_usuario,
+        fecha,
+        nota,
+        nuevo_comentario
+      );
       const messageToBus = comments
         ? formatMessageWithLengthPrefix("DBserexito")
         : formatMessageWithLengthPrefix("DBserfracaso");

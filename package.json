@@ -10,13 +10,15 @@
     "ssh2": "^1.13.0"
   },
   "scripts": {
-    "start:cli": "node src/client/base.js",
-    "start:cli-temp": "node src/client/client-temp.js",
+    "start:cli": "node src/client/client.js",
+    "start:cli-profesor": "node src/client/client-profesor.js",
+    "start:cli-curso": "node src/client/client-curso.js",
     "start:svDB": "node src/services/database/database.service.js",
     "start:svSession": "node src/services/sesion.service.js",
     "start:svUser": "node src/services/usuario.service.js",
     "start:svProfe": "node src/services/profesor.service.js",
-    "start:svEval": "node src/services/evaluation.service.js"
+    "start:svEval": "node src/services/evaluation.service.js",
+    "start:svCurso": "node src/services/cursos.service.js"
   },
   "keywords": [],
   "author": "",

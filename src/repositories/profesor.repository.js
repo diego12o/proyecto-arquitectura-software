@@ -22,11 +22,11 @@ class ProfesorRepository {
     }
   }
 
-  async deleteProfesor(id) {
+  async deleteProfesor(correo) {
     try {
       const result = await this.pool.query(
-        "DELETE FROM profesor WHERE id = $1",
-        [id]
+        "DELETE FROM profesor WHERE correo = $1",
+        [correo]
       );
       return result.rowCount > 0 ? true : false;
     } catch (error) {

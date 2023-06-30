@@ -70,6 +70,20 @@ class EvaluationRepository {
     }
   }
 
+  async updateComment(rut_alumno, fecha, nota, nuevo_comentario) {
+    try {
+      await this.pool.query(
+        "UPDATE evaluaciones SET comentario=$1 WHERE rut_alumno=$2 AND nota=$3 AND fecha=$4",
+        [nuevo_comentario, rut_alumno, nota, fecha]
+      );
+
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  }
+
   async editEvaluation(nota, comentario, id_profesor_curso, rut_alumno) {
     try {
       await this.pool.query(

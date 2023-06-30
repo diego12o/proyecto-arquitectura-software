@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS curso (
   codigo varchar(50) PRIMARY KEY,
-  carrera smallint NOT NULL DEFAULT '0',
+  carrera varchar(50) NOT NULL DEFAULT '0',
   nombre varchar(50) NOT NULL DEFAULT '0'
 );
 

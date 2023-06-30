@@ -1,15 +1,11 @@
 const pool = require("../config/database.js");
 
-class UserRepository {
+class CursoRepository {
   constructor() {
     this.pool = pool;
   }
 
-  async addCourse(
-    codigo,
-    carrera,
-    nombre
-  ) {
+  async addCourse(codigo, carrera, nombre) {
     try {
       await this.pool.query(
         "INSERT INTO curso(codigo, carrera, nombre) VALUES($1, $2, $3)",
@@ -26,14 +22,11 @@ class UserRepository {
     }
   }
 
-  async updateCourse(
-    codigo,
-    nombre
-  ) {
+  async updateCourse(codigo, carrera, nombre) {
     try {
       await this.pool.query(
-        'UPDATE "curso" SET nombre=$1 WHERE codigo = $2',
-        [ nombre, codigo]
+        'UPDATE "curso" SET nombre=$1 carrera=$2 WHERE codigo = $4',
+        [nombre, carrera, codigo]
       );
       const result = await this.pool.query(
         "SELECT * FROM curso WHERE codigo = $1",
@@ -58,7 +51,6 @@ class UserRepository {
       return false;
     }
   }
-  
 }
 
-module.exports = { UserRepository };
+module.exports = { CursoRepository };
