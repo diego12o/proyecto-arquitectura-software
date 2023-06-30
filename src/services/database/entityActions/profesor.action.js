@@ -30,7 +30,11 @@ async function excecuteProfesorAction(action, params, stream) {
     case "update": {
       const [id, correo, nombre] = params;
       console.log({ correo, nombre });
-      const success = await profesorRepository.updateProfe(id, correo, nombre);
+      const success = await profesorRepository.updateProfesor(
+        id,
+        correo,
+        nombre
+      );
       const messageToBus = success
         ? formatMessageWithLengthPrefix("DBserexito")
         : formatMessageWithLengthPrefix("DBserfracaso");
