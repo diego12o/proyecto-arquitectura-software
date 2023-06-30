@@ -1,15 +1,9 @@
 const SSHTunnel = require("../../utils/sshTunnel.js");
-const {
-  excecuteProfesorAction,
-} = require("./entityActions/profesor.action.js");
+const { excecuteProfesorAction,} = require("./entityActions/profesor.action.js");
 const { executeUserAction } = require("./entityActions/user.action.js");
-const {
-  executeEvaluationAction,
-} = require("./entityActions/evaluation.action.js");
+const {  executeEvaluationAction,} = require("./entityActions/evaluation.action.js");
 const { executeCursosAction } = require("./entityActions/cursos.action.js");
-const {
-  excecuteProfesorCursoAction,
-} = require("./entityActions/profesor-curso.action.js");
+const {  excecuteProfesorCursoAction,} = require("./entityActions/profesor-curso.action.js");
 
 function handler(data, stream) {
   const inputMessage = data.toString();

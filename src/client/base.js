@@ -1,7 +1,7 @@
 //const { formatMessageWithLengthPrefix } = require("../utils/messageFormatter");
 //const token = require("./token");
 require("dotenv").config();
-
+const { formatMessageWithLengthPrefix } = require("../utils/messageFormatter");
 const Client = require("ssh2").Client;
 const prompt = require("prompt-sync")({ sigint: true });
 
@@ -24,134 +24,259 @@ sshClient.on("ready", () => {
   // Configurar un canal de reenvío de puertos (túnel SSH)
   console.log("Conexion SSH establecida");
 
-  sshClient.forwardOut(
-    "127.0.0.1",
-    0,
-    targetHost,
-    targetPort,
-    (err, stream) => {
+  sshClient.forwardOut("127.0.0.1", 0,targetHost,targetPort,(err, stream) => {
       if (err) {
         console.error("Error en el canal de reenvío de puertos:", err);
         sshClient.end();
         return;
       }
       console.log("Tunel SSH implementado exitosamente");
+
+
+      
       let op = 1;
       while (op != 0) {
-        if (localStorage.getItem("token") === undefined) {
-          let consultar = [
-            "Hola",
-            "Bienvenido a la plataforma de criticas UDP",
-            "¿Que desea hacer?",
-            "Opciones: ",
-            "1. Registrar usuario",
-            "2. Iniciar Sesion",
-            "3. Olvide mi contraseña",
-            "0. Salir de la plataforma",
+        const consultar = [
+          "Hola",
+          "Bienvenido a la plataforma de criticas UDP",
+          "¿Que desea hacer?",
+          "Opciones: ",
+          "1. Registrar usuario",
+          "2. Iniciar Sesion",
+          "3. Olvide mi contraseña",
+          "0. Salir de la plataforma",
+        ];
+        for (let i of consultar) {
+          console.log(i);
+        }
+        op = prompt("");
+        if (op == 1) {
+          console.log("\n");
+          console.log(
+            "Registro de Usuario, por favor rellene los siguientes campos:",
+            "\n"
+          );
+          let rut = prompt("Ingrese su rut: ");
+          let correo = prompt("Ingrese su correo: ");
+          let contrasena = prompt("Ingrese su contraseña: ");
+          let carrera = prompt("Ingrese la carrera a la que pertenece: ");
+          let nombre = prompt("Ingrese su nombre: ");
+          let ano_ingreso = prompt( "Ingrese su año de ingreso a la universidad: " );
+          let es_admin = false; // Definido por defecto
+          let requestMessage ="00011usuar|create" + "|" + rut + "|" + correo + "|" + contrasena +"|" + carrera + "|" + nombre + "|" + ano_ingreso +"|" + es_admin;
+          console.log({ requestMessage });
+          stream.write(requestMessage);
+          stream.on("data", (data) => {
+            let x = data.toString();
+            console.log({ messageResponse: x });
+
+            var datos = x.slice(12);
+            if (datos == "exito") {
+              console.log("Usuario creado");
+            } else {
+              console.log("Fracaso al hacer el usuario");
+            }
+          });
+        }
+
+        if (op == 2) {
+          console.log("\n");
+          console.log("Inicio de Sesion, por favor rellene los siguientes campos: ", "\n");
+          let correo = prompt("Ingrese su correo: ");
+          let contrasena = prompt("Ingrese su contraseña: ");
+          let requestMessage = "00005isess" + "|" + correo + "|" + contrasena;
+          console.log({ requestMessage });
+          stream.write(requestMessage);
+          stream.on("data", (data) => {
+            let x = data.toString();
+            console.log({ messageResponse: x });
+            var datos = x.slice(12);
+            if (datos == "existe") {
+              console.log("Sesion iniciada");
+            } else {
+              console.log("Error al iniciar sesion");
+            }
+          });
+        }
+        if (op == 3) {
+            console.log("\n");
+            console.log( "Actualizacion de Contraseña, por favor rellene los siguientes campos:", "\n");
+            const correo = prompt("Ingrese su correo: ");
+            const contrasena = prompt("Ingrese su contraseña: ");
+            const requestMessage = "00011usuar|update" + "|" + contrasena + "|" + correo;
+            console.log({ requestMessage });
+            stream.write(requestMessage);
+            stream.on("data", (data) => {
+              const x = data.toString();
+              console.log({ messageResponse: x });
+
+              var datos = x.slice(12);
+
+              if (datos == "Actualizado") {
+                console.log("Contraseña actualizada");
+              } else {
+                console.log("Contraseña NO actualizada");
+              }
+            });
+          
+        }
+        console.log("");
+        adminq = prompt("Es ADMIN?(Si = 1) (No = 0):   ");
+        console.log("");
+        if (adminq == 1) {
+          // eres admin
+          const opcionsAdmin = [
+            "1. Agegar curso",
+            "2. Cambiar curso",
+            "3. Eliminar curso",
+            "4. Agregar profesor",
+            "5. Cambiar profesor",
+            "6. Eliminar profesor",
+            "7. Eliminar usuario",
+            "8. Eliminae comentario",
+            "0. Salir"
           ];
-          for (let i of consultar) {
-            console.log(consultar[i]);
+          for (let i of opcionsAdmin) {
+            console.log(i);
           }
-          op = prompt("");
-          if (op == 1) {
-            console.log("\n");
-            console.log(
-              "Registro de Usuario, por favor rellene los siguientes campos:",
-              "\n"
-            );
-            let rut = prompt("Ingrese su rut: ");
-            let correo = prompt("Ingrese su correo: ");
-            let contrasena = prompt("Ingrese su contraseña: ");
-            let carrera = prompt("Ingrese la carrera a la que pertenece: ");
-            let nombre = prompt("Ingrese su nombre: ");
-            let ano_ingreso = prompt(
-              "Ingrese su año de ingreso a la universidad: "
-            );
-            let es_admin = false; // Definido por defecto
-            let requestMessage =
-              "00011usuar|create" +
-              "|" +
-              rut +
-              "|" +
-              correo +
-              "|" +
-              contrasena +
-              "|" +
-              carrera +
-              "|" +
-              nombre +
-              "|" +
-              ano_ingreso +
-              "|" +
-              es_admin;
-            console.log({ requestMessage });
-            stream.write(requestMessage);
-            stream.on("data", (data) => {
-              let x = data.toString();
-              console.log({ messageResponse: x });
-
-              var datos = x.slice(12);
-              if (datos == "exito") {
-                console.log("Usuario creado");
-              } else {
-                console.log("Fracaso al hacer el usuario");
-              }
-            });
-          }
-
-          if (op == 2) {
-            console.log("\n");
-            console.log(
-              "Inicio de Sesion, por favor rellene los siguientes campos: ",
-              "\n"
-            );
-            let correo = prompt("Ingrese su correo: ");
-            let contrasena = prompt("Ingrese su contraseña: ");
-            let requestMessage = "00005isess" + "|" + correo + "|" + contrasena;
-            console.log({ requestMessage });
-            stream.write(requestMessage);
-            stream.on("data", (data) => {
-              let x = data.toString();
-              console.log({ messageResponse: x });
-              var datos = x.slice(12);
-              if (datos == "existe") {
-                console.log("Sesion iniciada");
-              } else {
-                console.log("Error al iniciar sesion");
-              }
-            });
-          }
-          if (op == 3) {
-            if (op == 2) {
-              console.log("\n");
-              console.log(
-                "Actualizacion de Contraseña, por favor rellene los siguientes campos:",
-                "\n"
-              );
-              const correo = prompt("Ingrese su correo: ");
-              const contrasena = prompt("Ingrese su contraseña: ");
-              const requestMessage =
-                "00011usuar|update" + "|" + contrasena + "|" + correo;
+          opAdmin = prompt("");
+          if (opAdmin == 1) {
+              const codigo = prompt("Ingrese el codigo que tendra el nuevo curso: " );
+              const carrera = prompt("Ingrese el nombre de la carrera el cual pertenecera este curso: ");
+              const nombre = prompt("Ingrese el nombre del curso:");
+  
+              const requestMessage = formatMessageWithLengthPrefix( "curso|create" + "|" + codigo + "|" + carrera + "|" + nombre );
               console.log({ requestMessage });
               stream.write(requestMessage);
-              stream.on("data", (data) => {
-                const x = data.toString();
-                console.log({ messageResponse: x });
-
-                var datos = x.slice(12);
-
-                if (datos == "Actualizado") {
-                  console.log("Contraseña actualizada");
-                } else {
-                  console.log("Contraseña NO actualizada");
-                }
+              stream.once("data", (data) => {
+              const x = data.toString();
+              console.log({ messageResponse: x });
+              const SuccesMessage = "exito";
+              const StatusMessage = x.slice(12, 12 + SuccesMessage.length);
+              if (StatusMessage != SuccesMessage) {
+                console.log("Curso creado con exito: ");
+              } else {
+                console.log("Error al crear curso");
+              }
               });
+              
+          }
+          if (opAdmin == 2) {
+              const codigo = prompt("Ingrese el codigo que tendra el nuevo curso: " );
+              const carrera = prompt("Ingrese el nombre de la carrera el cual pertenecera este curso: ");
+              const nombre = prompt("Ingrese el nombre del curso:");
+  
+              const requestMessage = formatMessageWithLengthPrefix( "curso|updtae" + "|" + codigo + "|" + carrera + "|" + nombre );
+              console.log({ requestMessage });
+              stream.write(requestMessage);
+              stream.once("data", (data) => {
+              const x = data.toString();
+              console.log({ messageResponse: x });
+              const SuccesMessage = "exito";
+              const StatusMessage = x.slice(12, 12 + SuccesMessage.length);
+              if (StatusMessage != SuccesMessage) {
+                console.log("Curso cambiado con exito: ");
+              } else {
+                console.log("Error al cambiar curso");
+              }
+            });
+          }
+          if (opAdmin == 3) {
+              const codigo = prompt("Ingrese el codigo del curso a eliminar: " );
+              const requestMessage = formatMessageWithLengthPrefix( "curso|delete" + "|" + codigo );
+              console.log({ requestMessage });
+              stream.write(requestMessage);
+              stream.once("data", (data) => {
+              const x = data.toString();
+              console.log({ messageResponse: x });
+              const SuccesMessage = "exito";
+              const StatusMessage = x.slice(12, 12 + SuccesMessage.length);
+              if (StatusMessage != SuccesMessage) {
+                console.log("Curso cambiado con exito: ");
+              } else {
+                console.log("Error al cambiar curso");
+              }
+            });
+          }
+          if (opAdmin == 4) {
+            const nombre = prompt("Ingrese el nombre del profesor: ");
+            const correo = prompt("Ingrese el nuevo correo: ");
+            const requestMessage = formatMessageWithLengthPrefix(
+              "profe|create" + "|" + nombre + "|" + correo
+            );
+            console.log({ requestMessage });
+            stream.write(requestMessage);
+            stream.once("data", (data) => {
+            const x = data.toString();
+            console.log({ messageResponse: x });
+            var datos = x.slice(12);
+            if (datos == "exito") {
+                console.log("Usuario creado");
+            } else {
+              console.log("Fracaso al hacer el usuario");
             }
+            });
           }
-          if (op == 0) {
-            console.log("\n");
-            console.log("Saliendo de la aplicacion: ");
+          if (opAdmin == 5) {
+            const nombre = prompt("Ingrese el nuevo nombre del profesor: ");
+            const correo = prompt("Ingrese el nuevo correo: ");
+            const requestMessage = formatMessageWithLengthPrefix("profe|update" + "|" + nombre + "|" + correo );
+            console.log({ requestMessage });
+            stream.write(requestMessage);
+            stream.once("data", (data) => {
+            const x = data.toString();
+            console.log({ messageResponse: x });
+            var datos = x.slice(12);
+            if (datos == "exito") {
+                console.log("Usuario creado");
+            } else {
+              console.log("Fracaso al hacer el usuario");
+            }
+            });
           }
+          if (opAdmin == 6) {
+            const correo = prompt(
+              "Ingrese el correo del profesor a eliminar: "
+            );
+            const requestMessage = formatMessageWithLengthPrefix(
+              "profe|delete|" + correo
+            );
+            console.log({ requestMessage });
+            stream.write(requestMessage);
+            stream.once("data", (data) => {
+            const x = data.toString();
+            console.log({ messageResponse: x });
+            var datos = x.slice(12);
+            if (datos == "eliminado") {
+                console.log("Profesor eliminado");
+            } else {
+                console.log("Profesor NO eliminado");
+              }
+            });
+          }
+          if (opAdmin == 7) {
+            // Delete usuario
+            
+          }
+
+
+        }
+        else{
+          // alumno comun y corriente
+        }
+
+
+
+
+
+
+        if (op == 0) {
+          console.log("\n");
+          console.log("Saliendo de la aplicacion: ");
+        }
+      }
+        /*
+        if (localStorage.getItem("token") === undefined) {
         } else {
           if (localStorage.getItem("user") === "ADMIN") {
             //usuario admin ya logeado
@@ -519,6 +644,7 @@ sshClient.on("ready", () => {
                 eliminar comentario,
                 atras (quizas necesite un ciclo do while)
               */
+              /*
               console.log(
                 '\nOpciones:' +
                 '\n1. Cambiar evaluación' +
@@ -628,7 +754,7 @@ sshClient.on("ready", () => {
           }
         }
       }
-
+      */
       // Recibir datos desde el túnel SSH
       // Cerrar el túnel SSH y la conexión SSH cuando hayas terminado
       stream.on("close", () => {
