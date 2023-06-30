@@ -52,11 +52,11 @@ sshClient.on("ready", () => {
           const opcionsUsers = [
             "1. Evaluar un profesor",
             "2. Visualizar promedio de evaluacion de un profesor",
-            "3. Visualizar las notas de evaluaciones que realizaste",
-            "4. Editar las evaluaciones que realizaste",
+            "3. Visualizar evaluación que realizaste",
+            "4. Editar evaluación que realizaste",
             "5. Visualizar comentarios a evaluaciones que realizastes",
             "6. Escribir comentario a una evaluacion que realizaste",
-            "7. Eliminar comentario de una evaluacion que realizaste",
+            "7. Eliminar una evaluacion que realizaste",
             "8. Cambiar contraseña",
           ];
 
@@ -91,7 +91,7 @@ sshClient.on("ready", () => {
             const rut_usuario = isAdmin
               ? prompt("Ingrese el rut del usuario: ")
               : User.rut;
-            const fecha = prompt("Ingrese el nombre del profesor: ");
+            const fecha = new Date(Date.now()).toLocaleString().split(',')[0].replaceAll('/', '-');
 
             const requestMessage = formatMessageWithLengthPrefix(
               "evalu|addEvaluation|" +
@@ -248,70 +248,20 @@ sshClient.on("ready", () => {
           }
 
           if (op == 6) {
-            const fecha = prompt(
-              "Ingrese la fecha en que realizaste la evaluacion(aaaa/mm/dd): "
-            );
+            const comentario = prompt("Ingrese el nombre del profesor: ");
+            const nota = prompt("Ingrese la nota hacia el profesor: ");
             const rut_usuario = isAdmin
               ? prompt("Ingrese el rut del usuario: ")
               : User.rut;
-            const nota = prompt("Ingrese la nota de la evaluacion: ");
-            const nuevo_comentario = prompt(
-              "Ingrese el nuevo comentario de la evaluacion: "
-            );
+            // const fecha = prompt("Ingrese el nombre del profesor: ");
+            const fecha = new Date(Date.now()).toLocaleString().split(',')[0].replaceAll('/', '-');
             const requestMessage = formatMessageWithLengthPrefix(
-              "evalu|updateComent" +
-                "|" +
-                rut_usuario +
+              "evalu|updateCommentEvaluation|" +
+                rut_usuario +  
                 "|" +
                 fecha +
                 "|" +
-                nota +
-                "|" +
-                nuevo_comentario
-            );
-
-            console.log({ requestMessage });
-            stream.write(requestMessage);
-
-            await new Promise((resolve, reject) => {
-              stream.once("data", (data) => {
-                const x = data.toString();
-                console.log({ messageResponse: x });
-
-                const SuccesMessage = "exito";
-                const StatusMessage = x.slice(12, 12 + SuccesMessage.length);
-                if (StatusMessage != SuccesMessage) {
-                  console.log("Comentarios actualizado: ");
-                } else {
-                  console.log(
-                    "Error actualizando comentario de la evaluaciones"
-                  );
-                }
-
-                resolve();
-              });
-            });
-          }
-
-          if (op == 7) {
-            const fecha = prompt(
-              "Ingrese la fecha en que realizaste la evaluacion(aaaa/mm/dd): "
-            );
-            const rut_usuario = isAdmin
-              ? prompt("Ingrese el rut del usuario: ")
-              : User.rut;
-            const nota = prompt("Ingrese la nota de la evaluacion: ");
-            const nuevo_comentario = "";
-            const requestMessage = formatMessageWithLengthPrefix(
-              "evalu|updateComent" +
-                "|" +
-                rut_usuario +
-                "|" +
-                fecha +
-                "|" +
-                nota +
-                "|" +
-                nuevo_comentario
+                comentario
             );
 
             console.log({ requestMessage });
@@ -328,7 +278,7 @@ sshClient.on("ready", () => {
                   console.log("Comentario actualizado: ");
                 } else {
                   console.log(
-                    "Error actualizando comentario de la evaluaciones"
+                    "Error actualizando comentario de evaluación"
                   );
                 }
 
@@ -338,6 +288,43 @@ sshClient.on("ready", () => {
           }
 
           if (op == 7) {
+            const id_evaluation = prompt("Ingrese el id de la evaluación a eliminar: ");
+
+            // se debe realizar una consulta en la bdd para saber si la
+            // evaluación pertenece al usuario que intenta eliminarla
+
+            const requestMessage = formatMessageWithLengthPrefix(
+              "evalu|deleteEvaluation" +
+              "|" +
+              id_evaluation
+            );
+
+            console.log({ requestMessage });
+            stream.write(requestMessage);
+
+            await new Promise((resolve, reject) => {
+              stream.once("data", (data) => {
+                const x = data.toString();
+                console.log({ messageResponse: x });
+
+                const SuccesMessage = "exito";
+                const StatusMessage = x.slice(12, 12 + SuccesMessage.length);
+                if (StatusMessage != SuccesMessage) {
+                  console.log("Evaluación eliminada ");
+                } else {
+                  console.log(
+                    "Error eliminando evaluación"
+                  );
+                }
+
+                resolve();
+              });
+            });
+          }
+
+          if (op == 8) {
+            ///////////////////////////////////////////////
+            // ACÁ CORRESPONDE CAMBIAR CONTRASEÑA SEGÚN MENU
             const rut_usuario = isAdmin
               ? prompt("Ingrese el rut del usuario: ")
               : User.rut;
@@ -417,24 +404,14 @@ sshClient.on("ready", () => {
           }
 
           if (isAdmin && op == 9) {
-            const fecha = prompt(
-              "Ingrese la fecha en que se realizo la evaluacion(aaaa/mm/dd): "
-            );
-            const rut_usuario = isAdmin
-              ? prompt("Ingrese el rut del usuario: ")
-              : User.rut;
-            const nota = prompt("Ingrese la nota de la evaluacion: ");
-            const nuevo_comentario = "";
+            const id_evaluation = prompt("Ingrese el id de la evaluación a eliminar: ");
+            const rut_usuario = prompt("Ingrese su rut: ");
             const requestMessage = formatMessageWithLengthPrefix(
-              "evalu|updateComent" +
-                "|" +
-                rut_usuario +
-                "|" +
-                fecha +
-                "|" +
-                nota +
-                "|" +
-                nuevo_comentario
+              "evalu|deleteEvaluationAdmin" +
+              "|" +
+              id_evaluation +
+              "|" +
+              rut_usuario
             );
 
             console.log({ requestMessage });
@@ -448,9 +425,9 @@ sshClient.on("ready", () => {
                 const SuccesMessage = "exito";
                 const StatusMessage = x.slice(12, 12 + SuccesMessage.length);
                 if (StatusMessage != SuccesMessage) {
-                  console.log("Comentario eliminado: ");
+                  console.log("Evaluación eliminada ");
                 } else {
-                  console.log("Error eliminado comentario de la evaluaciones");
+                  console.log("Error eliminando evaluación");
                 }
 
                 resolve();
