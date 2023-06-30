@@ -200,7 +200,7 @@ sshClient.on("ready", () => {
           }
           if (opAdmin == 4) {
             const nombre = prompt("Ingrese el nombre del profesor: ");
-            const correo = prompt("Ingrese el nuevo correo: ");
+            const correo = prompt("Ingrese el correo del profesor: ");
             const requestMessage = formatMessageWithLengthPrefix(
               "profe|create" + "|" + nombre + "|" + correo
             );
@@ -256,13 +256,184 @@ sshClient.on("ready", () => {
           }
           if (opAdmin == 7) {
             // Delete usuario
-            
+            const rut = prompt("Ingrese el rut del usuario a eliminar: " );
+            const requestMessage = formatMessageWithLengthPrefix("usuar|delete|" + rut);
+            console.log({ requestMessage });
+            stream.write(requestMessage);
+            stream.once("data", (data) => {
+            const x = data.toString();
+            console.log({ messageResponse: x });
+            var datos = x.slice(12);
+            if (datos == "eliminado") {
+                console.log("Usuario eliminado");
+            } else {
+                console.log("Usuario NO eliminado");
+              }
+            });
+          }
+          if (opAdmin == 8) {
+            const id_evaluation = prompt("Ingrese el id de la evaluación a eliminar: ");
+            const rut_usuario = prompt("Ingrese su rut: ");
+            const requestMessage = formatMessageWithLengthPrefix(
+              "evalu|deleteEvaluationAdmin" +
+              "|" +
+              id_evaluation +
+              "|" +
+              rut_usuario
+            );
+
+            console.log({ requestMessage });
+            stream.write(requestMessage);
+
+              stream.once("data", (data) => {
+                const x = data.toString();
+                console.log({ messageResponse: x });
+
+                const SuccesMessage = "exito";
+                const StatusMessage = x.slice(12, 12 + SuccesMessage.length);
+                if (StatusMessage != SuccesMessage) {
+                  console.log("Evaluación eliminada ");
+                } else {
+                  console.log("Error eliminando evaluación");
+                }
+
+              });
           }
 
 
         }
         else{
           // alumno comun y corriente
+          const opcionsAdmin = [
+            "1. Evaluar profesor",
+            "2. Visualizar promedio de un profesor",
+            "3. Visualizar evaluaciones",
+            "4. Editar evaluaciones",
+            "0. Salir"
+          ];
+          for (let i of opcionsAdmin) {
+            console.log(i);
+          }
+
+          opAlumno = prompt("");
+
+          if (opAlumno == 1) {
+            const id_profesor_curso = prompt( "Ingrese el id_profesor_curso: ");
+            const comentario = prompt("Ingrese el comentario: ");
+            const nota = prompt("Ingrese la nota: ");
+            const rut_usuario = isAdmin
+              ? prompt("Ingrese el rut del usuario: ")
+              : User.rut;
+            const fecha1 = new Date(Date.now()).toLocaleString().split(',')[0].replaceAll('/', '-');
+
+            const timestamp = Date.now()
+            const dateObj = new Date(timestamp);
+
+            const year = dateObj.getFullYear();
+            const month = ('0' + (dateObj.getMonth() + 1)).slice(-2); // Se agrega +1 porque los meses en JavaScript van de 0 a 11
+            const day = ('0' + dateObj.getDate()).slice(-2);
+
+            const fecha = day+"-"+month+"-"+year
+
+            const requestMessage = formatMessageWithLengthPrefix("evalu|addEvaluation|" + id_profesor_curso + "|" + comentario + "|" + nota + "|" + fecha +"|"+rut_usuario);
+            console.log({ requestMessage });
+            stream.write(requestMessage);
+              stream.once("data", (data) => {
+                const x = data.toString();
+                console.log({ messageResponse: x });
+
+                const SuccesMessage = "exito";
+                const StatusMessage = x.slice(12, 12 + SuccesMessage.length);
+                if (StatusMessage != SuccesMessage) {
+                  console.log("Evaluacion realizada");
+                } else {
+                  console.log("Error realizando la evalaucion");
+                }
+              });
+          }
+
+          if (opAlumno == 2) {
+            const id_profesor_curso = prompt("Ingrese el id profesor curso: ");
+            const requestMessage = formatMessageWithLengthPrefix(
+              "evalu|seeAvg|" + id_profesor_curso
+            );
+            console.log({ requestMessage });
+            stream.write(requestMessage);
+              stream.once("data", (data) => {
+                const x = data.toString();
+                console.log({ messageResponse: x });
+
+                const SuccesMessage = "exito";
+                const StatusMessage = x.slice(12, 12 + SuccesMessage.length);
+                if (StatusMessage != SuccesMessage) {
+                  const payload = x.slice(12 + SuccesMessage.length);
+                  console.log("Promedio de evaluaciones: ", payload);
+                } else {
+                  console.log("Error obteniendo el promedio");
+                }
+              });
+          }
+
+          if (opAlumno == 3) {
+            const rut_alumno = prompt("Ingrese el rut: ");
+            const requestMessage = formatMessageWithLengthPrefix(
+              "evalu|seeEvaluation|" + rut_alumno
+            );
+            console.log({ requestMessage });
+            stream.write(requestMessage);
+              stream.once("data", (data) => {
+                const x = data.toString();
+                console.log({ messageResponse: x });
+
+                const SuccesMessage = "exito";
+                const StatusMessage = x.slice(12, 12 + SuccesMessage.length);
+                if (StatusMessage != SuccesMessage) {
+                  const payload = x.slice(12 + SuccesMessage.length);
+                  console.log("Evaluaciones realizadas: ", payload);
+                } else {
+                  console.log("Error obteniendo evaluaciones realizadas");
+                }
+              });
+          }
+
+          if (opAlumno == 4) {
+            const nota = prompt("Ingrese la nueva nota de la evaluacion: ");
+            const rut_usuario = isAdmin
+              ? prompt("Ingrese el rut del usuario: ")
+              : User.rut;
+            const comentario = prompt(
+              "Ingrese el nuevo comentario de la evaluacion: "
+            );
+            const id_profesor_curso = prompt("Ingrese el id profesor curso: ");
+
+            const requestMessage = formatMessageWithLengthPrefix(
+              "evalu|editEvaluation" +
+                "|" +
+                nota +
+                "|" +
+                comentario +
+                "|" +
+                id_profesor_curso +
+                "|" +
+                rut_usuario
+            );
+
+            console.log({ requestMessage });
+            stream.write(requestMessage);
+              stream.once("data", (data) => {
+                const x = data.toString();
+                console.log({ messageResponse: x });
+
+                const SuccesMessage = "actualizado";
+                const StatusMessage = x.slice(12, 12 + SuccesMessage.length);
+                if (StatusMessage != SuccesMessage) {
+                  console.log("Evaluacion actualizada");
+                } else {
+                  console.log("Error actualizando la evalaucion");
+                }
+
+              });
+          }
         }
 
 
