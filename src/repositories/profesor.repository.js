@@ -22,6 +22,20 @@ class ProfesorRepository {
     }
   }
 
+  async updateProfesor(id, correo, nombre) {
+    let result;
+    try {
+      result = await this.pool.query(
+        "UPDATE profesor SET correo=$1 nombre =$2 WHERE id = $3",
+        [correo, nombre, id]
+      );
+      return result.rows.length > 0 ? true : false;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  }
+
   async deleteProfesor(correo) {
     try {
       const row = await this.pool.query(
