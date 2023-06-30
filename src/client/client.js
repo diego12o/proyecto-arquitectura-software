@@ -83,15 +83,22 @@ sshClient.on("ready", () => {
           console.log(RelleneElFormulario);
 
           if (op == 1) {
-            const id_profesor_curso = prompt(
-              "Ingrese el nombre del profesor: "
-            );
-            const comentario = prompt("Ingrese el nombre del profesor: ");
-            const nota = prompt("Ingrese el nombre del profesor: ");
+            const id_profesor_curso = prompt( "Ingrese el id_profesor_curso: ");
+            const comentario = prompt("Ingrese el comentario: ");
+            const nota = prompt("Ingrese la nota: ");
             const rut_usuario = isAdmin
               ? prompt("Ingrese el rut del usuario: ")
               : User.rut;
-            const fecha = new Date(Date.now()).toLocaleString().split(',')[0].replaceAll('/', '-');
+            const fecha1 = new Date(Date.now()).toLocaleString().split(',')[0].replaceAll('/', '-');
+
+            const timestamp = Date.now()
+            const dateObj = new Date(timestamp);
+
+            const year = dateObj.getFullYear();
+            const month = ('0' + (dateObj.getMonth() + 1)).slice(-2); // Se agrega +1 porque los meses en JavaScript van de 0 a 11
+            const day = ('0' + dateObj.getDate()).slice(-2);
+
+            const fecha = day+"-"+month+"-"+year
 
             const requestMessage = formatMessageWithLengthPrefix(
               "evalu|addEvaluation|" +
@@ -151,6 +158,7 @@ sshClient.on("ready", () => {
           }
 
           if (op == 3) {
+            const rut_alumno = prompt("Ingrese el rut: ");
             const requestMessage = formatMessageWithLengthPrefix(
               "evalu|seeEvaluation|" + rut_alumno
             );
@@ -445,7 +453,6 @@ sshClient.on("ready", () => {
             const nombre = prompt("Ingrese el nombre del usuario: ");
             const ano = prompt("Ingrese el año de ingreso del usuario ");
             const tipo = prompt("Ingrese 'ADMIN' si sera admin ");
-
             const requestMessage = formatMessageWithLengthPrefix(
               "usuar|create" +
                 "|" +

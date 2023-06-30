@@ -8,12 +8,12 @@ class EvaluationRepository {
   async addEvaluation(id_profesor_curso, comentario, nota, fecha, rut_usuario) {
     try {
       await this.pool.query(
-        "INSERT INTO evaluaciones(id_profesor_curso, comentario, nota, fecha, rut_usuario) VALUES($1, $2, $3, $4, $5)",
+        "INSERT INTO evaluacion(id_profesor_curso, comentario, nota, fecha, rut_usuario) VALUES($1, $2, $3, $4, $5)",
         [id_profesor_curso, comentario, nota, fecha, rut_usuario]
       );
 
       const result = await this.pool.query(
-        "SELECT * FROM evaluaciones WHERE id_profesor_curso=$1 AND comentario=$2 AND nota=$3 AND fecha=$4 AND rut_usuario = $5",
+        "SELECT * FROM evaluacion WHERE id_profesor_curso=$1 AND comentario=$2 AND nota=$3 AND fecha=$4 AND rut_usuario = $5",
         [id_profesor_curso, comentario, nota, fecha, rut_usuario]
       );
       return result.rows.length > 0 ? true : false;
@@ -26,7 +26,7 @@ class EvaluationRepository {
   async seeAvg(id_profesor_curso) {
     try {
       const avg = await this.pool.query(
-        "SELECT AVG(nota) FROM evaluaciones WHERE id_profesor_curso = $1",
+        "SELECT AVG(nota) FROM evaluacion WHERE id_profesor_curso = $1",
         [id_profesor_curso]
       );
 
@@ -41,13 +41,12 @@ class EvaluationRepository {
   async seeEvaluation(rut) {
     try {
       const result = await this.pool.query(
-        "SELECT * FROM evaluaciones WHERE rut_usuario = $1",
+        "SELECT * FROM evaluacion WHERE rut_usuario = $1",
         [rut]
       );
-
       console.log(result.rows);
-
-      return result.rows;
+      //return result.rows;
+      return result.rows.length > 0 ? true : false;
     } catch (error) {
       console.error(error);
       return false;
@@ -57,12 +56,10 @@ class EvaluationRepository {
   async seeComments(rut) {
     try {
       const result = await this.pool.query(
-        "SELECT comentario, fecha, id FROM evaluaciones WHERE rut_usuario = $1",
+        "SELECT comentario, fecha, id FROM evaluacion WHERE rut_usuario = $1",
         [rut]
       );
-
       console.log(result.rows);
-
       return result.rows;
     } catch (error) {
       console.error(error);
@@ -73,7 +70,7 @@ class EvaluationRepository {
   async updateComment(rut_alumno, fecha, nuevo_comentario) {
     try {
       await this.pool.query(
-        "UPDATE evaluaciones SET comentario=$1 WHERE rut_alumno=$2 AND fecha=$3",
+        "UPDATE evaluacion SET comentario=$1 WHERE rut_alumno=$2 AND fecha=$3",
         [nuevo_comentario, rut_alumno, fecha]
       );
 
@@ -87,7 +84,7 @@ class EvaluationRepository {
   async editEvaluation(nota, comentario, id_profesor_curso, rut_alumno) {
     try {
       await this.pool.query(
-        "UPDATE evaluaciones SET nota=$1, comentario=$2 WHERE rut_alumno = $3 AND id_profesor_curso = $4",
+        "UPDATE evaluacion SET nota=$1, comentario=$2 WHERE rut_alumno = $3 AND id_profesor_curso = $4",
         [nota, comentario, rut_alumno, id_profesor_curso]
       );
 
@@ -100,7 +97,7 @@ class EvaluationRepository {
 
   async deleteEvaluation(id_evaluation) {
     try {
-      await this.pool.query("DELETE FROM evaluaciones WHERE id = $1", [
+      await this.pool.query("DELETE FROM evaluacion WHERE id = $1", [
         id_evaluation,
       ]);
 
@@ -120,7 +117,7 @@ class EvaluationRepository {
 
       if (check.rows.length == 0) return false;
 
-      await this.pool.query("DELETE FROM evaluaciones WHERE id = $1", [
+      await this.pool.query("DELETE FROM evaluacion WHERE id = $1", [
         id_evaluation,
       ]);
 
