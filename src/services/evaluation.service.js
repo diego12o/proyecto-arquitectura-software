@@ -54,7 +54,7 @@ function handler(data, stream) {
           idService + "exito",
           idService + "fracaso"
         );
-      case "editEvaluation":
+      case "updateComment":
         return sendActionToDBAndHandleResponse(
           stream,
           "evaluation",
