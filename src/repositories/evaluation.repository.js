@@ -70,11 +70,11 @@ class EvaluationRepository {
     }
   }
 
-  async updateComment(rut_alumno, fecha, nota, nuevo_comentario) {
+  async updateComment(rut_alumno, fecha, nuevo_comentario) {
     try {
       await this.pool.query(
-        "UPDATE evaluaciones SET comentario=$1 WHERE rut_alumno=$2 AND nota=$3 AND fecha=$4",
-        [nuevo_comentario, rut_alumno, nota, fecha]
+        "UPDATE evaluaciones SET comentario=$1 WHERE rut_alumno=$2 AND fecha=$3",
+        [nuevo_comentario, rut_alumno, fecha]
       );
 
       return true;

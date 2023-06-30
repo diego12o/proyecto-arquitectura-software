@@ -63,11 +63,10 @@ async function executeEvaluationAction(action, params, stream) {
     }
 
     case "updateComent": {
-      const [rut_usuario, fecha, nota, nuevo_comentario] = params;
+      const [rut_usuario, fecha, nuevo_comentario] = params;
       const comments = await evaluationRepository.updateComment(
         rut_usuario,
         fecha,
-        nota,
         nuevo_comentario
       );
       const messageToBus = comments
