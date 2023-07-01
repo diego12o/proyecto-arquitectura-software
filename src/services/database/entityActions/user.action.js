@@ -37,7 +37,7 @@ async function executeUserAction(action, params, stream) {
     }
 
     case "delete": {
-      const [_, __, delRut] = params;
+      const [delRut] = params;
       const deleted = await userRepository.deleteUser(delRut);
       const messageToBus = deleted
         ? formatMessageWithLengthPrefix("DBsereliminado")
@@ -50,8 +50,8 @@ async function executeUserAction(action, params, stream) {
       const [isessMail, isessPassword] = params;
       const usuario = await userRepository.findUserByMail(isessMail);
       const messageToBus =
-        usuario && usuario.contrasena === isessPassword
-          ? formatMessageWithLengthPrefix("DBserexiste|" + usuario.es_admin)
+        usuario && usuario?.contrasena === isessPassword
+          ? formatMessageWithLengthPrefix("DBserexiste|" + usuario)
           : formatMessageWithLengthPrefix("DBsernoexiste");
       console.log({ messageToBus });
       return stream.write(messageToBus);

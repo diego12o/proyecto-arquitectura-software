@@ -10,7 +10,7 @@
     "ssh2": "^1.13.0"
   },
   "scripts": {
-    "start:cli": "node src/client/client.js",
+    "start:cli": "node src/client/final-client.js",
     "start:cli-profesor": "node src/client/client-profesor.js",
     "start:cli-curso": "node src/client/client-curso.js",
     "start:svDB": "node src/services/database/database.service.js",

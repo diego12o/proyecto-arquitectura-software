@@ -17,34 +17,15 @@ function handler(data, stream) {
 
   if (idService === "usuar") {
     console.log({ inputMessage });
-    switch (action) {
-      case "create":
-        return sendActionToDBAndHandleResponse(
-          stream,
-          "user",
-          action,
-          params,
-          idService + "exito",
-          idService + "fracaso"
-        );
-      case "update":
-        return sendActionToDBAndHandleResponse(
-          stream,
-          "user",
-          action,
-          params,
-          idService + "actualizado",
-          idService + "noactualizado"
-        );
-      case "delete":
-        return sendActionToDBAndHandleResponse(
-          stream,
-          "user",
-          action,
-          params,
-          idService + "eliminado",
-          idService + "noeliminado"
-        );
+    if (action === "create" || action === "update" || action === "delete") {
+      return sendActionToDBAndHandleResponse(
+        stream,
+        "user",
+        action,
+        params,
+        idService + "exito",
+        idService + "fracaso"
+      );
     }
   }
 }

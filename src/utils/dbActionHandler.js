@@ -31,7 +31,9 @@ function sendActionToDBAndHandleResponse(
         isExitoInStr || isActualizadoInStr || isEliminadoInStr || isExisteInStr;
 
       const message = isSuccess ? successMsg : errorMsg;
-      const messageToBus = formatMessageWithLengthPrefix(message);
+      const messageToBus = formatMessageWithLengthPrefix(
+        message + "|" + payload
+      );
       console.log({ messageToBus });
       stream.write(messageToBus);
     }

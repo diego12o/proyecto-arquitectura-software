@@ -17,79 +17,24 @@ function handler(data, stream) {
 
   if (idService === "evalu") {
     console.log({ inputMessage });
-    switch (action) {
-      case "addEvaluation":
-        return sendActionToDBAndHandleResponse(
-          stream,
-          "evaluation",
-          action,
-          params,
-          idService + "exito",
-          idService + "fracaso"
-        );
-      case "seeAvg":
-        return sendActionToDBAndHandleResponse(
-          stream,
-          "evaluation",
-          action,
-          params,
-          idService + "exito",
-          idService + "fracaso"
-        );
-      case "seeEvaluation":
-        return sendActionToDBAndHandleResponse(
-          stream,
-          "evaluation",
-          action,
-          params,
-          idService + "exito",
-          idService + "fracaso"
-        );
-      case "seeComments":
-        return sendActionToDBAndHandleResponse(
-          stream,
-          "evaluation",
-          action,
-          params,
-          idService + "exito",
-          idService + "fracaso"
-        );
-      case "updateComment":
-        return sendActionToDBAndHandleResponse(
-          stream,
-          "evaluation",
-          action,
-          params,
-          idService + "actualizado",
-          idService + "noactualizado"
-        );
-      case "editEvaluation":
-        return sendActionToDBAndHandleResponse(
-          stream,
-          "evaluation",
-          action,
-          params,
-          idService + "actualizado",
-          idService + "noactualizado"
-        );
-      case "deleteEvaluation":
-        return sendActionToDBAndHandleResponse(
-          stream,
-          "evaluation",
-          action,
-          params,
-          idService + "eliminado",
-          idService + "noeliminado"
-        );
-      case "deleteEvaluationAdmin":
-        return sendActionToDBAndHandleResponse(
-          stream,
-          "evaluation",
-          action,
-          params,
-          idService + "eliminado",
-          idService + "noeliminado"
-        );
+    if (
+      action == "addEvaluation" ||
+      action == "seeAvg" ||
+      action == "seeEvaluation" ||
+      action == "SeeComments" ||
+      action == "updateComment" ||
+      action == "editEvaluation" ||
+      action == "deleteEvaluation" ||
+      action == "deleteEvaluationAdmin"
+    ) {
+      return sendActionToDBAndHandleResponse(
+        stream,
+        "evaluation",
+        action,
+        params,
+        idService + "exito",
+        idService + "fracaso"
+      );
     }
   }
 }

@@ -19,8 +19,8 @@ function handler(data, stream) {
       "user",
       "isess",
       [mail, pass],
-      IdService + "existe",
-      IdService + "noexiste"
+      IdService + "exito",
+      IdService + "fracaso"
     );
   }
 }

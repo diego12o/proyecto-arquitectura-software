@@ -1,5 +1,4 @@
 const pool = require("../config/database.js");
-const pws = require("./encriptado.js"); // Para usar el servicio debe consultar o agregar la contraseña como pws.enc(password)
 
 class UserRepository {
   constructor() {

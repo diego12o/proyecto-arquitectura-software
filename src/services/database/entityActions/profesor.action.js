@@ -1,10 +1,4 @@
 const {
-  EvaluationRepository,
-} = require("../../../repositories/evaluation.repository");
-const {
-  ProfesorCursoRepository,
-} = require("../../../repositories/profesor-curso.repository");
-const {
   ProfesorRepository,
 } = require("../../../repositories/profesor.repository");
 const {

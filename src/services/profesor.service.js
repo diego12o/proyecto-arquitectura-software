@@ -16,44 +16,25 @@ function handler(data, stream) {
     console.log({ inputMessage });
     const [action, ...params] = inputMessage.slice(11).split("|");
     let entity = "profesor";
-    let sucessMsg, errorMsg;
-    switch (action) {
-      case "create": {
-        //00046profe|profesor|create|felipe@correo.com|felipe
-        sucessMsg = IdService + "exito";
-        errorMsg = IdService + "fracaso";
-        break;
-      }
-      case "delete": {
-        //00046profe|profesor|delete|felipe@correo.com
-        sucessMsg = IdService + "eliminado";
-        errorMsg = IdService + "noeliminado";
-        break;
-      }
-
-      case "update": {
-        //00046profe|profesor|update|${id}|${correo}|${nombre}
-        sucessMsg = IdService + "exito";
-        errorMsg = IdService + "fracaso";
-        break;
-      }
-      case "enroll": {
-        //00046profe|profesor|enroll|${codigo_curso}|${id_profesor}
-        sucessMsg = IdService + "ingresado";
-        errorMsg = IdService + "noingresado";
-        entity = "profesorCurso";
-        break;
-      }
+    if (action == "create" || action == "delete" || action == "update") {
+      return sendActionToDBAndHandleResponse(
+        stream,
+        entity,
+        action,
+        params,
+        IdService + "exito",
+        IdService + "fracaso"
+      );
+    } else if (action == "enroll") {
+      return sendActionToDBAndHandleResponse(
+        stream,
+        "profesorCurso",
+        action,
+        params,
+        IdService + "exito",
+        IdService + "fracaso"
+      );
     }
-
-    return sendActionToDBAndHandleResponse(
-      stream,
-      entity,
-      action,
-      params,
-      sucessMsg,
-      errorMsg
-    );
   }
 }
 
