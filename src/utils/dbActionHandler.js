@@ -22,15 +22,8 @@ function sendActionToDBAndHandleResponse(
     if (idServiceBDResponse === "DBser") {
       console.log({ responseMessageSVDB });
       const payload = responseMessageSVDB.slice(10);
-      const isExitoInStr = payload.includes("exito");
-      const isActualizadoInStr = payload.includes("actualizado");
-      const isEliminadoInStr = payload.includes("eliminado");
-      const isExisteInStr = payload.includes("existe");
 
-      const isSuccess =
-        isExitoInStr || isActualizadoInStr || isEliminadoInStr || isExisteInStr;
-
-      const message = isSuccess ? successMsg : errorMsg;
+      const message = payload.includes("exito") ? successMsg : errorMsg;
       const messageToBus = formatMessageWithLengthPrefix(
         message + "|" + payload
       );
@@ -40,4 +33,4 @@ function sendActionToDBAndHandleResponse(
   });
 }
 
-module.exports = sendActionToDBAndHandleResponse;
+module.exports = { sendActionToDBAndHandleResponse };

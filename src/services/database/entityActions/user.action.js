@@ -7,12 +7,21 @@ async function executeUserAction(action, params, stream) {
   const userRepository = new UserRepository();
   switch (action) {
     case "create": {
-      const [rut, mail, password, carrera, nombre, ano_ingreso, tipo] = params;
-      console.log({ rut, mail, password, carrera, nombre, ano_ingreso, tipo });
+      const [rut, correo, contraseña, carrera, nombre, ano_ingreso, tipo] =
+        params;
+      console.log({
+        rut,
+        correo,
+        contraseña,
+        carrera,
+        nombre,
+        ano_ingreso,
+        tipo,
+      });
       const success = await userRepository.addUser(
         rut,
-        mail,
-        password,
+        correo,
+        contraseña,
         carrera,
         nombre,
         ano_ingreso,
@@ -26,11 +35,11 @@ async function executeUserAction(action, params, stream) {
       return stream.write(messageToBus);
     }
 
-    case "update": {
+    case "changePassword": {
       const [updPassword, updMail] = params;
       const updated = await userRepository.changePassword(updPassword, updMail);
       const messageToBus = updated
-        ? formatMessageWithLengthPrefix("DBseractualizado")
+        ? formatMessageWithLengthPrefix("DBserexito")
         : formatMessageWithLengthPrefix("DBserfracaso");
       console.log({ messageToBus });
       return stream.write(messageToBus);
@@ -40,7 +49,7 @@ async function executeUserAction(action, params, stream) {
       const [delRut] = params;
       const deleted = await userRepository.deleteUser(delRut);
       const messageToBus = deleted
-        ? formatMessageWithLengthPrefix("DBsereliminado")
+        ? formatMessageWithLengthPrefix("DBserexito")
         : formatMessageWithLengthPrefix("DBserfracaso");
       console.log({ messageToBus });
       return stream.write(messageToBus);
@@ -51,8 +60,8 @@ async function executeUserAction(action, params, stream) {
       const usuario = await userRepository.findUserByMail(isessMail);
       const messageToBus =
         usuario && usuario?.contrasena === isessPassword
-          ? formatMessageWithLengthPrefix("DBserexiste|" + usuario)
-          : formatMessageWithLengthPrefix("DBsernoexiste");
+          ? formatMessageWithLengthPrefix("DBserexito|" + usuario)
+          : formatMessageWithLengthPrefix("DBserfracaso");
       console.log({ messageToBus });
       return stream.write(messageToBus);
     }

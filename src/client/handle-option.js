@@ -18,9 +18,9 @@ function generatePrompt(params, user) {
       return user.rut;
     }
     if (param === "seraAdmin") {
-      return prompt(`Ingrese ${param}: `) === "ADMIN";
+      return prompt(`Ingrese "ADMIN" si el usuario ${param}: `) === "ADMIN";
     }
-    if (param === "password") {
+    if (param === "contraseña" || param === "nueva_contraseña") {
       return enc(prompt(`Ingrese ${param}: `));
     }
 

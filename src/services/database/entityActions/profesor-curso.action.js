@@ -10,15 +10,15 @@ async function excecuteProfesorCursoAction(action, params, stream) {
 
   switch (action) {
     case "enroll": {
-      const [codigo_curso, id_profesor] = params;
+      const [id_profesor, codigo_curso] = params;
       console.log({ codigo_curso, id_profesor });
       const success = await profesorCursoRepository.addProfesorCurso(
         codigo_curso,
         id_profesor
       );
       const messageToBus = success
-        ? formatMessageWithLengthPrefix("DBserinscrito")
-        : formatMessageWithLengthPrefix("DBsernoinscrito");
+        ? formatMessageWithLengthPrefix("DBserexito")
+        : formatMessageWithLengthPrefix("DBserfracaso");
 
       console.log({ messageToBus });
       return stream.write(messageToBus);

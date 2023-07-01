@@ -45,8 +45,7 @@ class EvaluationRepository {
         [rut]
       );
       console.log(result.rows);
-      //return result.rows;
-      return result.rows.length > 0 ? true : false;
+      return result.rows;
     } catch (error) {
       console.error(error);
       return false;
@@ -62,66 +61,52 @@ class EvaluationRepository {
       console.log(result.rows);
       return result.rows;
     } catch (error) {
-      console.error(error);
+      console.error(error.message);
       return false;
     }
   }
 
-  async updateComment(rut_alumno, fecha, nuevo_comentario) {
+  async updateComment(rut_usuario, fecha, nuevo_comentario) {
     try {
-      await this.pool.query(
-        "UPDATE evaluacion SET comentario=$1 WHERE rut_alumno=$2 AND fecha=$3",
-        [nuevo_comentario, rut_alumno, fecha]
+      const result = await this.pool.query(
+        "UPDATE evaluacion SET comentario=$1 WHERE rut_usuario=$2 AND fecha=$3",
+        [nuevo_comentario, rut_usuario, fecha]
       );
 
-      return true;
+      return result.rowCount > 0 ? true : false;
     } catch (error) {
       console.error(error);
       return false;
     }
   }
 
-  async editEvaluation(nota, comentario, id_profesor_curso, rut_alumno) {
+  async editEvaluation(nota, comentario, id_profesor_curso, rut_usuario) {
     try {
-      await this.pool.query(
-        "UPDATE evaluacion SET nota=$1, comentario=$2 WHERE rut_alumno = $3 AND id_profesor_curso = $4",
-        [nota, comentario, rut_alumno, id_profesor_curso]
+      const result = await this.pool.query(
+        "UPDATE evaluacion SET nota=$1, comentario=$2 WHERE rut_usuario = $3 AND id_profesor_curso = $4",
+        [nota, comentario, rut_usuario, id_profesor_curso]
       );
 
-      return true;
+      return result.rowCount > 0 ? true : false;
     } catch (error) {
       console.error(error);
       return false;
     }
   }
 
-  async deleteEvaluation(id_evaluation) {
+  async deleteEvaluation(id_evaluation, rut_usuario) {
     try {
-      await this.pool.query("DELETE FROM evaluacion WHERE id = $1", [
-        id_evaluation,
-      ]);
+      let query = "DELETE FROM evaluacion WHERE id = $1";
+      let values = [id_evaluation];
 
-      return true;
-    } catch (error) {
-      console.error(error);
-      return false;
-    }
-  }
+      if (rut_usuario) {
+        query += " AND rut_usuario = $2";
+        values.push(rut_usuario);
+      }
 
-  async deleteEvaluationAdmin(id_evaluation, rut_alumno) {
-    try {
-      const check = await this.pool.query(
-        "SELECT * FROM usuario WHERE rut = $1 AND es_admin = true",
-        [rut_alumno]
-      );
+      const result = await this.pool.query(query, values);
 
-      if (check.rows.length == 0) return false;
-
-      await this.pool.query("DELETE FROM evaluacion WHERE id = $1", [
-        id_evaluation,
-      ]);
-
-      return true;
+      return result.rowCount > 0 ? true : false;
     } catch (error) {
       console.error(error);
       return false;

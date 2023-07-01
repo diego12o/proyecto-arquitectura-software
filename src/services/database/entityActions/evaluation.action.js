@@ -36,15 +36,15 @@ async function executeEvaluationAction(action, params, stream) {
       const [id_profesor_curso] = params;
       const avg = await evaluationRepository.seeAvg(id_profesor_curso);
       const messageToBus = avg
-        ? formatMessageWithLengthPrefix("DBserexito")
+        ? formatMessageWithLengthPrefix("DBserexito|" + avg)
         : formatMessageWithLengthPrefix("DBserfracaso");
       console.log({ messageToBus });
       return stream.write(messageToBus);
     }
 
     case "seeEvaluation": {
-      const [rut] = params;
-      const evaluations = await evaluationRepository.seeEvaluation(rut);
+      const [rut_usuario] = params;
+      const evaluations = await evaluationRepository.seeEvaluation(rut_usuario);
       const messageToBus = evaluations
         ? formatMessageWithLengthPrefix("DBserexito|" + evaluations)
         : formatMessageWithLengthPrefix("DBserfracaso");
@@ -52,11 +52,39 @@ async function executeEvaluationAction(action, params, stream) {
       return stream.write(messageToBus);
     }
 
+    case "editEvaluation": {
+      const [nota, comentario, id_profesor_curso, rut_usuario] = params;
+      const success = await evaluationRepository.editEvaluation(
+        nota,
+        comentario,
+        id_profesor_curso,
+        rut_usuario
+      );
+      const messageToBus = success
+        ? formatMessageWithLengthPrefix("DBseractualizado")
+        : formatMessageWithLengthPrefix("DBserfracaso");
+      console.log({ messageToBus });
+      return stream.write(messageToBus);
+    }
+
+    case "deleteEvaluation": {
+      const [id_evaluation, rut_usuario] = params;
+      const success = await evaluationRepository.deleteEvaluation(
+        id_evaluation,
+        rut_usuario
+      );
+      const messageToBus = success
+        ? formatMessageWithLengthPrefix("DBsereliminado")
+        : formatMessageWithLengthPrefix("DBserfracaso");
+      console.log({ messageToBus });
+      return stream.write(messageToBus);
+    }
+
     case "seeComments": {
-      const [rut] = params;
-      const comments = await evaluationRepository.seeComments(rut);
+      const [rut_usuario] = params;
+      const comments = await evaluationRepository.seeComments(rut_usuario);
       const messageToBus = comments
-        ? formatMessageWithLengthPrefix("DBserexito")
+        ? formatMessageWithLengthPrefix("DBserexito|" + comments)
         : formatMessageWithLengthPrefix("DBserfracaso");
       console.log({ messageToBus });
       return stream.write(messageToBus);
@@ -76,40 +104,13 @@ async function executeEvaluationAction(action, params, stream) {
       return stream.write(messageToBus);
     }
 
-    case "editEvaluation": {
-      const [nota, comentario, id_profesor_curso, rut_alumno] = params;
-      const success = await evaluationRepository.editEvaluation(
-        nota,
-        comentario,
-        id_profesor_curso,
-        rut_alumno
-      );
-      const messageToBus = success
-        ? formatMessageWithLengthPrefix("DBseractualizado")
-        : formatMessageWithLengthPrefix("DBserfracaso");
-      console.log({ messageToBus });
-      return stream.write(messageToBus);
-    }
-
-    case "deleteEvaluation": {
-      // RUT ALUMNO
-      const [id_evaluation] = params;
-      const success = await evaluationRepository.deleteEvaluation(
-        id_evaluation
-      );
-      const messageToBus = success
-        ? formatMessageWithLengthPrefix("DBsereliminado")
-        : formatMessageWithLengthPrefix("DBserfracaso");
-      console.log({ messageToBus });
-      return stream.write(messageToBus);
-    }
-
-    case "deleteEvaluationAdmin": {
-      // RUT ADMIN
-      const [id_evaluation, rut_alumno] = params;
-      const success = await evaluationRepository.deleteEvaluation(
-        id_evaluation,
-        rut_alumno
+    case "deleteComentario": {
+      const [rut_usuario, fecha] = params;
+      const deletedComment = "";
+      const success = await evaluationRepository.updateComment(
+        rut_usuario,
+        fecha,
+        deletedComment
       );
       const messageToBus = success
         ? formatMessageWithLengthPrefix("DBsereliminado")

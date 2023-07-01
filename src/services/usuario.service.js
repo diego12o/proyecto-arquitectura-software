@@ -1,5 +1,5 @@
 const SSHTunnel = require("../utils/sshTunnel.js");
-const sendActionToDBAndHandleResponse = require("../utils/dbActionHandler");
+const { sendActionToDBAndHandleResponse } = require("../utils/dbActionHandler");
 
 const sshTunnel = new SSHTunnel();
 

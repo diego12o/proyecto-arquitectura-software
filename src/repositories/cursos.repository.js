@@ -28,11 +28,8 @@ class CursoRepository {
         'UPDATE "curso" SET nombre=$1 carrera=$2 WHERE codigo = $3',
         [nombre, carrera, codigo]
       );
-      const result = await this.pool.query(
-        "SELECT * FROM curso WHERE codigo = $1",
-        [codigo]
-      );
-      return result.rows.length > 0 ? true : false;
+
+      return result.rowCount > 0 ? true : false;
     } catch (error) {
       console.error(error);
       return false;

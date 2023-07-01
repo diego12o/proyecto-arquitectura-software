@@ -10,7 +10,7 @@ async function excecuteProfesorAction(action, params, stream) {
 
   switch (action) {
     case "create": {
-      const [correo, nombre] = params;
+      const [nombre, correo] = params;
       console.log({ correo, nombre });
       const success = await profesorRepository.addProfesor(correo, nombre);
       const messageToBus = success
@@ -22,7 +22,7 @@ async function excecuteProfesorAction(action, params, stream) {
     }
 
     case "update": {
-      const [id, correo, nombre] = params;
+      const [id, nombre, correo] = params;
       console.log({ correo, nombre });
       const success = await profesorRepository.updateProfesor(
         id,
@@ -51,7 +51,7 @@ async function excecuteProfesorAction(action, params, stream) {
       const deleted = await profesorRepository.deleteProfesor(profesor.id);
 
       const messageToBus = deleted
-        ? formatMessageWithLengthPrefix("DBsereliminado")
+        ? formatMessageWithLengthPrefix("DBserexito")
         : formatMessageWithLengthPrefix("DBserfracaso");
 
       console.log({ messageToBus });

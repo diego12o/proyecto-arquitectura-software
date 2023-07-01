@@ -25,7 +25,7 @@ async function executeCursosAction(action, params, stream) {
         nombre
       );
       const messageToBus = updated
-        ? formatMessageWithLengthPrefix("DBseractualizado")
+        ? formatMessageWithLengthPrefix("DBserexito")
         : formatMessageWithLengthPrefix("DBserfracaso");
       console.log({ messageToBus });
       return stream.write(messageToBus);
@@ -35,7 +35,7 @@ async function executeCursosAction(action, params, stream) {
       const [codigo] = params;
       const deleted = await cursoRepository.deleteCourse(codigo);
       const messageToBus = deleted
-        ? formatMessageWithLengthPrefix("DBsereliminado")
+        ? formatMessageWithLengthPrefix("DBserexito")
         : formatMessageWithLengthPrefix("DBserfracaso");
       console.log({ messageToBus });
       return stream.write(messageToBus);
