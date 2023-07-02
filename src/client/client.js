@@ -1,33 +1,45 @@
-const SSHTunnel = require("../utils/sshTunnel.js");
 const { handleOption } = require("./handle-option.js");
-const sshTunnel = new SSHTunnel();
+const prompt = require("prompt-sync")({ sigint: true });
 const { optionsConfigUser, optionsConfigAdmin } = require("./constants.js");
+const { ClientSSHTunnel } = require("../utils/clientsshTunnel.js");
+const sshTunnel = new ClientSSHTunnel();
 
-async function handlerClient(data, stream) {
-  let user = await handleOption(stream, { isAdmin: false }, "isses", "isses", [
-    "correo",
-    "contraseña",
-  ]);
-  console.log(user);
+async function handlerClient(stream) {
+  console.log("Tunel SSH implementado exitosamente\n");
 
-  const isAdmin = user.isAdmin;
+  let isessResponse;
+  try {
+    isessResponse = await handleOption(
+      stream,
+      { es_admin: true },
+      "isess",
+      "isess",
+      ["correo", "contraseña"]
+    );
+  } catch (err) {
+    console.log(err.message);
+    return;
+  }
+
+  const User = JSON.parse(isessResponse);
+
+  const isAdmin = User.es_admin;
   const nameUser = isAdmin ? "Administrador" : "Alumno";
 
-  console.log("Tunel SSH implementado exitosamente\n");
-  console.log(`Hola, ${nameUser}!`);
+  console.log(`\n\nHola, ${nameUser}!`);
   console.log("Bienvenido a la plataforma de criticas UDP\n");
-  console.log("Que opción deseas realizar?\n\n");
+  console.log("Que opción deseas realizar?");
 
   while (true) {
     const optionsConfig = isAdmin ? optionsConfigAdmin : optionsConfigUser;
 
-    console.log(`0. Salir`);
-
+    console.log("\n\n");
     for (let i = 0; i < optionsConfig.length; i++) {
       console.log(`${i + 1}. ${optionsConfig[i].detail}`);
     }
+    console.log(`0. Salir`);
 
-    const op = prompt("");
+    const op = prompt("\n\n");
     if (op === "0") {
       loop = false;
       continue;
@@ -42,8 +54,12 @@ async function handlerClient(data, stream) {
 
     const { detail, idService, action, requireParams } = chosenOption;
     console.log(`\n${detail}, por favor rellene los siguientes campos: \n`);
-    await handleOption(stream, user, idService, action, requireParams);
+    try {
+      await handleOption(stream, User, idService, action, requireParams);
+    } catch (err) {
+      console.log(err.message);
+    }
   }
 }
 
-sshTunnel.connect(handlerClient, "");
+sshTunnel.connect(handlerClient);

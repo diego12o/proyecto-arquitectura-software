@@ -15,7 +15,7 @@ function handler(data, stream) {
   const IdService = inputMessage.slice(5, 10);
   if (IdService === "isess") {
     console.log({ inputMessage });
-    const [mail, pass] = inputMessage.slice(11).split("|");
+    const [mail, pass] = inputMessage.slice(17).split("|");
     sendActionToDBAndHandleResponse(
       stream,
       "user",

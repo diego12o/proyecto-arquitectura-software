@@ -21,12 +21,18 @@ function sendActionToDBAndHandleResponse(
 
     if (idServiceBDResponse === "DBser") {
       console.log({ responseMessageSVDB });
-      const payload = responseMessageSVDB.slice(10);
+      let payload;
+      let message;
+      if (responseMessageSVDB.includes("exito")) {
+        payload = responseMessageSVDB.slice(18);
+        console.log({ payload });
+        message = !payload ? successMsg : `${successMsg}|${payload}`;
+      } else if (responseMessageSVDB.includes("fracaso")) {
+        payload = responseMessageSVDB.slice(20);
+        message = !payload ? errorMsg : `${successMsg}|${payload}`;
+      }
+      const messageToBus = formatMessageWithLengthPrefix(message);
 
-      const message = payload.includes("exito") ? successMsg : errorMsg;
-      const messageToBus = formatMessageWithLengthPrefix(
-        message + "|" + payload
-      );
       console.log({ messageToBus });
       stream.write(messageToBus);
     }

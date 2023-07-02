@@ -11,6 +11,7 @@
   },
   "scripts": {
     "start:cli": "node src/client/client.js",
+    "start:cliCreateUser": "node src/client/client-createUser.js",
     "start:svDB": "node src/services/database/database.service.js",
     "start:svSession": "node src/services/sesion.service.js",
     "start:svUser": "node src/services/usuario.service.js",

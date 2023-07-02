@@ -39,16 +39,7 @@ async function excecuteProfesorAction(action, params, stream) {
 
     case "delete": {
       const [correo] = params;
-      const profesor = await profesorRepository.findProfesorByEmail(correo);
-
-      if (!profesor) {
-        const messageToBus = formatMessageWithLengthPrefix(
-          "DBserfracasoNoxiste"
-        );
-        console.log({ messageToBus });
-        return stream.write(messageToBus);
-      }
-      const deleted = await profesorRepository.deleteProfesor(profesor.id);
+      const deleted = await profesorRepository.deleteProfesor(correo);
 
       const messageToBus = deleted
         ? formatMessageWithLengthPrefix("DBserexito")

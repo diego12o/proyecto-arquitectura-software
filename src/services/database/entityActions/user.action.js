@@ -60,7 +60,9 @@ async function executeUserAction(action, params, stream) {
       const usuario = await userRepository.findUserByMail(isessMail);
       const messageToBus =
         usuario && usuario?.contrasena === isessPassword
-          ? formatMessageWithLengthPrefix("DBserexito|" + usuario)
+          ? formatMessageWithLengthPrefix(
+              "DBserexito|" + JSON.stringify(usuario)
+            )
           : formatMessageWithLengthPrefix("DBserfracaso");
       console.log({ messageToBus });
       return stream.write(messageToBus);

@@ -23,9 +23,10 @@ class CursoRepository {
   }
 
   async updateCourse(codigo, carrera, nombre) {
+    console.log({ codigo, carrera, nombre });
     try {
-      await this.pool.query(
-        'UPDATE "curso" SET nombre=$1 carrera=$2 WHERE codigo = $3',
+      const result = await this.pool.query(
+        'UPDATE "curso" SET nombre=$1, carrera=$2 WHERE codigo = $3',
         [nombre, carrera, codigo]
       );
 

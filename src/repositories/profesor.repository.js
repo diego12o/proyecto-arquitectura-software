@@ -29,7 +29,7 @@ class ProfesorRepository {
         "UPDATE profesor SET correo=$1, nombre =$2 WHERE id = $3",
         [correo, nombre, id]
       );
-      return result.rows.length > 0 ? true : false;
+      return result.rowCount > 0 ? true : false;
     } catch (error) {
       console.error(error);
       return false;
@@ -39,14 +39,17 @@ class ProfesorRepository {
   async deleteProfesor(correo) {
     try {
       const row = await this.pool.query(
-        "SELECT id FROM profesor WHERE correo =$1",
+        "SELECT id FROM profesor WHERE correo = $1",
         [correo]
       );
 
-      const id_profesor = row.rows[0];
+      console.log({ row });
+      console.log({ profe: row.rows[0] });
+      const id_profesor = row.rows[0]?.id;
+      if (!id_profesor) return false;
 
       await this.pool.query(
-        "DELETE FROM evalucion, (SELECT id FROM profesor WHERE id_profesor = $1) as prof_curso WHERE evaluacion.id_profesor_curso = prof_curso.id",
+        "DELETE FROM evaluacion WHERE id_profesor_curso IN (SELECT id FROM profesor_curso WHERE id_profesor = $1)",
         [id_profesor]
       );
 
@@ -55,11 +58,11 @@ class ProfesorRepository {
       ]);
 
       const result = await this.pool.query(
-        "DELETE FROM profesor WHERE correo =$1",
+        "DELETE FROM profesor WHERE correo = $1",
         [correo]
       );
 
-      return result.rowCount > 0 ? true : false;
+      return result.rowCount > 0;
     } catch (error) {
       console.error(error);
       return false;

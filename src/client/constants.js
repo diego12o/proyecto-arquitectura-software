@@ -11,56 +11,56 @@ const optionsConfigAlumno = [
       "rut_usuario",
     ],
   },
-  ,
+
   {
     detail: "Visualizar promedio de evaluacion de un profesor",
     idService: "evalu",
     action: "seeAvg",
     requireParams: ["id_profesor_curso"],
   },
-  ,
+
   {
     detail: "Visualizar evaluación que realizaste",
     idService: "evalu",
     action: "seeEvaluation",
     requireParams: ["rut_usuario"],
   },
-  ,
+
   {
     detail: "Editar evaluación que realizaste",
     idService: "evalu",
     action: "editEvaluation",
     requireParams: ["nota", "comentario", "id_profesor_curso", "rut_usuario"],
   },
-  ,
+
   {
     detail: "Eliminar una evaluacion que realizaste",
     idService: "evalu",
     action: "deleteEvaluation",
     requireParams: ["id_evaluation, rut_ususario"],
   },
-  ,
+
   {
     detail: "Visualizar comentarios a evaluaciones que realizastes",
     idService: "evalu",
     action: "seeComments",
     requireParams: ["rut_usuario"],
   },
-  ,
+
   {
     detail: "Escribir comentario a una evaluacion que realizaste",
     idService: "evalu",
     action: "updateComent",
     requireParams: ["rut_usuario", "fecha", "nuevo_comentario"],
   },
-  ,
+
   {
     detail: "Eliminar comentario a una evaluacion que realizaste",
     idService: "evalu",
     action: "deleteComentario",
     requireParams: ["rut_usuario", "fecha"],
   },
-  ,
+
   {
     detail: "Cambiar contraseña",
     idService: "usuar",
@@ -147,4 +147,4 @@ const optionsConfigAdmin = [
   },
 ];
 
-exports.module = { optionsConfigAlumno, optionsConfigAdmin };
+module.exports = { optionsConfigAlumno, optionsConfigAdmin };
